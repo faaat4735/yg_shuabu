@@ -21,6 +21,6 @@ if (file_exists(CONFIG_DIR . 'config.private.php')) {
 !defined('DB_DATABASE') && define('DB_DATABASE', 'rz_walk');
 
 !defined('ENV_PRODUCTION') && define('ENV_PRODUCTION', FALSE);
-
+!defined('DEBUG_MODE') && define('DEBUG_MODE', FALSE);
 
 require VENDOR_DIR . 'autoload.php';

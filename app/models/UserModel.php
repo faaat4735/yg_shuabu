@@ -10,4 +10,12 @@ class UserModel extends Model
         return $this->db->getAll($sql);
         return '11sdfasdf';
     }
+
+    public function getUserInfoByDeviceId () {
+        return TRUE;
+    }
+
+    public function createUser () {
+        return TRUE;
+    }
 }
