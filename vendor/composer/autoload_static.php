@@ -21,11 +21,18 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
     );
 
     public static $classMap = array (
+        'Controller\\InfoController' => __DIR__ . '/../..' . '/app/controllers/InfoController.php',
         'Controller\\UserController' => __DIR__ . '/../..' . '/app/controllers/UserController.php',
+        'Core\\Ad' => __DIR__ . '/../..' . '/app/core/Ad.php',
+        'Core\\Ad\\StartBot' => __DIR__ . '/../..' . '/app/core/Ad/StartBot.php',
+        'Core\\Ad\\StartMid' => __DIR__ . '/../..' . '/app/core/Ad/StartMid.php',
         'Core\\Controller' => __DIR__ . '/../..' . '/app/core/Controller.php',
         'Core\\DB\\Pdo' => __DIR__ . '/../..' . '/app/core/DB/Pdo.php',
         'Core\\Db' => __DIR__ . '/../..' . '/app/core/Db.php',
         'Core\\Model' => __DIR__ . '/../..' . '/app/core/Model.php',
+        'Core\\Task' => __DIR__ . '/../..' . '/app/core/Task.php',
+        'Core\\Task\\Box' => __DIR__ . '/../..' . '/app/core/Task/Box.php',
+        'Core\\Task\\Walk' => __DIR__ . '/../..' . '/app/core/Task/Walk.php',
         'Model\\UserModel' => __DIR__ . '/../..' . '/app/models/UserModel.php',
     );
 

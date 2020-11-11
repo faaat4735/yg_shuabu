@@ -20,6 +20,8 @@ if (file_exists(CONFIG_DIR . 'config.private.php')) {
 !defined('DB_PASSWORD') && define('DB_PASSWORD', '123456');
 !defined('DB_DATABASE') && define('DB_DATABASE', 'rz_walk');
 
+!defined('OSS_HOST') && define('OSS_HOST', 'https://oss.shyonggui.com/');
+
 !defined('ENV_PRODUCTION') && define('ENV_PRODUCTION', FALSE);
 !defined('DEBUG_MODE') && define('DEBUG_MODE', FALSE);
 
