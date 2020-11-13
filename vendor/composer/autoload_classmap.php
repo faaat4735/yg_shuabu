@@ -18,5 +18,8 @@ return array(
     'Core\\Task' => $baseDir . '/app/core/Task.php',
     'Core\\Task\\Box' => $baseDir . '/app/core/Task/Box.php',
     'Core\\Task\\Walk' => $baseDir . '/app/core/Task/Walk.php',
+    'Model\\ActivityModel' => $baseDir . '/app/models/ActivityModel.php',
+    'Model\\GoldModel' => $baseDir . '/app/models/GoldModel.php',
     'Model\\UserModel' => $baseDir . '/app/models/UserModel.php',
+    'Model\\WalkModel' => $baseDir . '/app/models/WalkModel.php',
 );

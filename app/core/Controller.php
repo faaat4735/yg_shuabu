@@ -5,10 +5,20 @@ namespace Core;
 class Controller
 {
     protected $inputData;
+    protected $userId;
 
     public function __construct()
     {
         $this->inputData = json_decode(file_get_contents("php://input"), TRUE);
+    }
+
+    public function init () {
+        $userId = $this->checkHeader();
+        if (!$userId) {
+            return 203;
+        }
+        $this->userId = $userId;
+        return TRUE;
     }
 
     public function __get ($name) {

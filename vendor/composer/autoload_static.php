@@ -33,7 +33,10 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Core\\Task' => __DIR__ . '/../..' . '/app/core/Task.php',
         'Core\\Task\\Box' => __DIR__ . '/../..' . '/app/core/Task/Box.php',
         'Core\\Task\\Walk' => __DIR__ . '/../..' . '/app/core/Task/Walk.php',
+        'Model\\ActivityModel' => __DIR__ . '/../..' . '/app/models/ActivityModel.php',
+        'Model\\GoldModel' => __DIR__ . '/../..' . '/app/models/GoldModel.php',
         'Model\\UserModel' => __DIR__ . '/../..' . '/app/models/UserModel.php',
+        'Model\\WalkModel' => __DIR__ . '/../..' . '/app/models/WalkModel.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

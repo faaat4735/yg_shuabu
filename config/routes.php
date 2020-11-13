@@ -11,7 +11,10 @@ Macaw::any('/(:all)/(:all)', function($controller, $action) {
         echo $return;
         exit;
     } else {
-        $result = $controllerClass->$actionName();
+        $result = $controllerClass->init();
+        if (TRUE === $result) {
+            $result = $controllerClass->$actionName();
+        }
     }
     // 返回数据
     if (is_array($result)) {

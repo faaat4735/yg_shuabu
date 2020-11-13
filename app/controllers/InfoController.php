@@ -7,12 +7,12 @@ use Core\Controller;
 class InfoController extends Controller
 {
     public function startAction () {
-        $userId = $this->checkHeader();
-        if (!$userId) {
-            return 203;
+        $taskClass = new \Core\Task($this->userId);
+        $adClass = new \Core\Ad($this->userId);
+        // 更新步数
+        if (isset($this->inputData['totalWalk'])) {
+            $this->model->walk->updateTotal($this->userId, $this->inputData['totalWalk']);
         }
-        $taskClass = new \Core\Task($userId);
-        $adClass = new \Core\Ad($userId);
         // 金币
         // 宝箱
         // receiveTime serverTime currentCount award
