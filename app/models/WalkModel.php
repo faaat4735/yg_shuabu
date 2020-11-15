@@ -43,9 +43,9 @@ class WalkModel extends Model
         $walkInfo = $this->db->getRow($sql, $userId, date('Y-m-d H:i:s', $startTime));
         // 获取用户当前总步数
         $return = array();
-        $sql = 'SELECT IFNULL(total_walk, 0) FROM t_walk WHERE user_id = ? AND walk_date = ?';
+        $sql = 'SELECT total_walk, FROM t_walk WHERE user_id = ? AND walk_date = ?';
         // 返回 总步数
-        $return['walkCount'] = $this->db->getOne($sql, $userId, date('Y-m-d'));
+        $return['walkCount'] = $this->db->getOne($sql, $userId, date('Y-m-d')) ?: 0;
         // 获取用户当前领取的奖励的次数信息
         $sql = 'SELECT gold_count FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
         $receiveWalk = $this->db->getColumn($sql, $userId, date('Y-m-d'), 'walk');
