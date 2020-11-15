@@ -45,7 +45,7 @@ class WalkModel extends Model
         $return = array();
         $sql = 'SELECT total_walk, FROM t_walk WHERE user_id = ? AND walk_date = ?';
         // 返回 总步数
-        $return['walkCount'] = $this->db->getOne($sql, $userId, date('Y-m-d')) ?: 0;
+        $return['walkCount'] = (int) ($this->db->getOne($sql, $userId, date('Y-m-d')) ?: 0);
         // 获取用户当前领取的奖励的次数信息
         $sql = 'SELECT gold_count FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
         $receiveWalk = $this->db->getColumn($sql, $userId, date('Y-m-d'), 'walk');
