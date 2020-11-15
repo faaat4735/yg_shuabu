@@ -23,7 +23,7 @@ Macaw::any('/(:all)/(:all)', function($controller, $action) {
     // 返回错误码
         //opt 返回错误码msg列表
         //201 token 错误  202 访问错误  203 认证失败
-        $array = array(201 => '无效token', 202 => '访问失败，请稍后再试', 203 => '认证失败，请稍后再试', 204 => '抱歉您的账户已被冻结');
+        $array = array(201 => '无效token', 202 => '访问失败，请稍后再试', 203 => '认证失败，请稍后再试', 204 => '抱歉您的账户已被冻结', 301 => '验证失败，无法领取', 302 => '验证失败，无法领取', 303 => '验证失败，无法领取');
         $return = array('code' => $result, 'data' => (object) array(), 'msg' => $array[$result] ?? '');
     }
     if (DEBUG_MODE) {

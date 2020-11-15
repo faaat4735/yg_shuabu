@@ -14,4 +14,9 @@ class Walk extends Task
         // list 可领取的金币列表
         return $this->model->walk->receiveInfo($this->userId);
     }
+
+    protected function _receiveAward ($data) {
+        $this->model->gold->insert(array('user_id' => $this->userId, 'gold_count' => $data['count'], 'gold_amount' => $data['num'], 'gold_source' => $data['type']));
+        return array();
+    }
 }

@@ -14,8 +14,8 @@ class UserModel extends Model
         $userInfo = $this->db->getRow($sql, $deviceId);
         if ($userInfo) {
             $this->updateLoginTime($userInfo['user_id']);
+            $userInfo['currentGold'] = $this->gold->total($userInfo['user_id'], 'current');
             unset($userInfo['user_id']);
-            $userInfo['currentGold'] = 1000;// todo 获取当前用户金币
             return $userInfo;
         } else {
             return FALSE;

@@ -43,7 +43,7 @@ class WalkModel extends Model
         $walkInfo = $this->db->getRow($sql, $userId, date('Y-m-d H:i:s', $startTime));
         // 获取用户当前总步数
         $return = array();
-        $sql = 'SELECT total_walk FROM t_walk WHERE user_id = ? AND walk_date = ?';
+        $sql = 'SELECT IFNULL(total_walk, 0) FROM t_walk WHERE user_id = ? AND walk_date = ?';
         // 返回 总步数
         $return['walkCount'] = $this->db->getOne($sql, $userId, date('Y-m-d'));
         // 获取用户当前领取的奖励的次数信息
@@ -59,10 +59,9 @@ class WalkModel extends Model
         } else {
             // 返回 用户当前可以领取的金币信息
             $return['list'] = array();
-            $listCountArr = array_slice(array_diff(range(1, count($receiveWalk) + $this->walkAwardLimitCount - $walkInfo['walkCount']), $receiveWalk), 0, $this->walkAwardLimitCount - $walkInfo['walkCount']);
+            $listCountArr = array_slice(array_diff(range(1, count($receiveWalk) + $this->walkAwardLimitCount), $receiveWalk), 0, $this->walkAwardLimitCount - $walkInfo['walkCount']);
 //            $listCountArr = array(1, 2, 3);
             foreach ($listCountArr as $listCount) {
-                // todo num
                 $sql = 'SELECT award_min, award_max FROM t_award_config WHERE config_type = ? AND counter <= ? ORDER BY counter DESC LIMIT 1';
                 $awardRange = $this->db->getRow($sql, 'walk', $listCount);
                 $return['list'][] = array('count' => $listCount, 'num' => rand($awardRange['award_min'], $awardRange['award_max']), 'type' => 'walk');
