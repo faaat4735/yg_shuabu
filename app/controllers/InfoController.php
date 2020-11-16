@@ -6,6 +6,10 @@ use Core\Controller;
 
 class InfoController extends Controller
 {
+    /**
+     * 首页信息
+     * @return array
+     */
     public function startAction () {
         $taskClass = new \Core\Task($this->userId);
         $adClass = new \Core\Ad($this->userId);
@@ -19,5 +23,10 @@ class InfoController extends Controller
         // 中间任务
         // 底部任务
         return array('walkInfo' => $taskClass->getInfo('walk'), 'boxInfo' => $taskClass->getInfo('box'), 'taskMid' => $adClass->getInfo('startMid'), 'taskBot' => $adClass->getInfo('startBot'));
+    }
+
+    public function walkAction () {
+        $taskClass = new \Core\Task($this->userId);
+        return $taskClass->getInfo('walk');
     }
 }

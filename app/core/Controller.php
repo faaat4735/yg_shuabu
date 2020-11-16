@@ -17,7 +17,6 @@ class Controller
         if (!$userId) {
             return 203;
         }
-        $this->userId = $userId;
         return TRUE;
     }
 
@@ -38,6 +37,11 @@ class Controller
         return $this->$name;
     }
 
+    /**
+     * 检查头部
+     * @param bool $checkToken
+     * @return bool
+     */
     public function checkHeader($checkToken = TRUE) {
 //        return TRUE;// todo debug删除
         // HTTP_VERSION_CODE
@@ -53,10 +57,12 @@ class Controller
             return FALSE;
         }
         if ($checkToken) {
+            if (!isset($_SERVER['HTTP_ACCESS_TOKEN'])) {
+                return FALSE;
+            }
             // 检查token合法
             $sql = 'SELECT user_id FROM t_user WHERE access_token = ?';
-            $userId = $this->db->getOne($sql, $_SERVER['HTTP_ACCESS_TOKEN']);
-            return $userId;
+            $this->userId = $this->db->getOne($sql, $_SERVER['HTTP_ACCESS_TOKEN']);
         }
         return TRUE;
     }

@@ -50,7 +50,8 @@ class WalkModel extends Model
         $sql = 'SELECT gold_count FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
         $receiveWalk = $this->db->getColumn($sql, $userId, date('Y-m-d'), 'walk');
         // 返回 剩余可以领取的次数
-        $return['restCount'] = floor($return['walkCount'] / $this->rewardCounter) - count($receiveWalk);
+        $maxReceiveCount = floor($return['walkCount'] / $this->rewardCounter);
+        $return['restCount'] = $maxReceiveCount - count($receiveWalk);
         // 判断已领取的次数是否超过设定的上限
         if ($this->walkAwardLimitCount <= $walkInfo['walkCount']) {
             $return['list'] = array();
@@ -59,8 +60,7 @@ class WalkModel extends Model
         } else {
             // 返回 用户当前可以领取的金币信息
             $return['list'] = array();
-            $listCountArr = array_slice(array_diff(range(1, count($receiveWalk) + $this->walkAwardLimitCount), $receiveWalk), 0, $this->walkAwardLimitCount - $walkInfo['walkCount']);
-//            $listCountArr = array(1, 2, 3);
+            $listCountArr = array_slice(array_diff($maxReceiveCount ? range(1, min(count($receiveWalk) + $this->walkAwardLimitCount, $maxReceiveCount)) : array(), $receiveWalk), 0, $this->walkAwardLimitCount - $walkInfo['walkCount']);
             foreach ($listCountArr as $listCount) {
                 $sql = 'SELECT award_min, award_max FROM t_award_config WHERE config_type = ? AND counter <= ? ORDER BY counter DESC LIMIT 1';
                 $awardRange = $this->db->getRow($sql, 'walk', $listCount);
