@@ -18,6 +18,9 @@ Macaw::any('/(:all)/(:all)', function($controller, $action) {
     }
     // 返回数据
     if (is_array($result)) {
+        if ($result == array()) {
+            $result = (object)array();
+        }
         $return = array('code' => 200, 'data' => $result, 'msg' => '');
     } else {
     // 返回错误码
