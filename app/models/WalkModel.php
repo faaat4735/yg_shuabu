@@ -56,7 +56,7 @@ class WalkModel extends Model
         if ($this->walkAwardLimitCount <= $walkInfo['walkCount']) {
             $return['list'] = array();
             // 返回下次可以领取的时间
-            $return['receiveTime'] = strtotime('+' . $this->walkAwardLimitTime . ' minutes', strtotime($walkInfo['walkCount'])) * 1000;
+            $return['receiveTime'] = strtotime('+' . $this->walkAwardLimitTime . ' minutes', strtotime($walkInfo['minTime'])) * 1000;
         } else {
             // 返回 用户当前可以领取的金币信息
             $return['list'] = array();
