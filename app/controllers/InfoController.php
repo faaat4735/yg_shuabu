@@ -29,4 +29,16 @@ class InfoController extends Controller
         $taskClass = new \Core\Task($this->userId);
         return $taskClass->getInfo('walk');
     }
+
+    public function lotteryAction () {
+        $taskClass = new \Core\Task($this->userId);
+        return array('lotteryInfo' => $taskClass->getInfo('lottery'), 'awardRoll' => array('游客20201117 抽到100金币', '游客20221117 抽到200金币', '游客20201119 抽到50金币', '游客20181117 抽到100金币'));
+    }
+
+    public function taskAction () {
+        $taskClass = new \Core\Task($this->userId);
+        $adClass = new \Core\Ad($this->userId);
+        var_dump($taskClass->getInfo('sign'));exit;
+        return array('signInfo' => $taskClass->getInfo('sign'), 'taskTop' => $adClass->getInfo('task_top'), 'taskDaily' => $adClass->getInfo('task_daily'), 'taskNewer' => $adClass->getInfo('task_newer'));
+    }
 }

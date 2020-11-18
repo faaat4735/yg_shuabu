@@ -70,8 +70,18 @@ class Task extends Controller
     }
 
     protected function _getInfo() {
-        // todo
-        return array($this->type);
+        $activityInfo = $this->model->activity->info($this->type);
+        $activityReceiveInfo = $this->model->gold->receiveGold($this->userId, $this->type);
+        $return = array();
+        if ($activityInfo['activity_max'] > $activityReceiveInfo['count']) {
+            $sql = 'SELECT award_min, award_max FROM t_award_config WHERE config_type = ? AND counter <= ? ORDER BY counter DESC LIMIT 1';
+            $awardRange = $this->db->getRow($sql, $this->type, $activityReceiveInfo['count'] + 1);
+            $return = array('count' => $activityReceiveInfo['count'] + 1, 'num' => rand($awardRange['award_min'], $awardRange['award_max']),'type' => $this->type, 'receiveTime' => (($activityReceiveInfo['maxTime'] ? strtotime($activityReceiveInfo['maxTime']) + $activityInfo['activity_duration'] * 60 : time())) * 1000);
+        }
+        $return['maxReceive'] = $activityInfo['activity_max'];
+        $return['currentReceive'] = $activityReceiveInfo['count'];
+        $return['serverTime'] = time() * 1000;
+        return $return;
     }
 
     protected function _receiveAward ($data) {

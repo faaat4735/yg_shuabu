@@ -7,7 +7,7 @@ Macaw::any('/(:all)/(:all)', function($controller, $action) {
     $controllerClass = new $controllerName();
     $actionName = $action . 'Action';
     if (!method_exists($controllerClass, $actionName)) {
-        $return = 'error';
+        $return = '未找到';
         echo $return;
         exit;
     } else {

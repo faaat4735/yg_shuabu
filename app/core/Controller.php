@@ -52,7 +52,7 @@ class Controller
         if (!isset($_SERVER['HTTP_VERSION_CODE']) || !isset($_SERVER['HTTP_SOURCE']) || !isset($_SERVER['HTTP_TIME']) || !isset($_SERVER['HTTP_SECRET'])) {
             return FALSE;
         }
-        // 验证时间戳在当前时间的误差范围内
+        // 验证时间戳在当前时间的误差范围内 todo
         if ($_SERVER['HTTP_SECRET'] !== substr(md5($_SERVER['HTTP_TIME'] . 'ygsecert1007'), 0,8)) {
             return FALSE;
         }

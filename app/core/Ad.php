@@ -15,6 +15,7 @@ class Ad extends Controller
     }
 
     public function getInfo ($type) {
+        // todo 移动到数据库
         $className = '\\Core\\Ad\\' . ucfirst($type);
         if (class_exists($className)) {
             $this->className = new $className($this->userId);
