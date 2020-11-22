@@ -7,17 +7,23 @@ use Core\Task;
 class Sign extends Task
 {
     protected function _getInfo() {
-        $activityInfo = $this->model->activity->info('box');
-        $activityReceiveInfo = $this->model->gold->receiveGold($this->userId, 'box');
-        $return = array();
-        if ($activityInfo['activity_max'] > $activityReceiveInfo['count']) {
-            $sql = 'SELECT award_min, award_max FROM t_award_config WHERE config_type = ? AND counter <= ? ORDER BY counter DESC LIMIT 1';
-            $awardRange = $this->db->getRow($sql, 'box', $activityReceiveInfo['count'] + 1);
-            $return = array('count' => $activityReceiveInfo['count'] + 1, 'num' => rand($awardRange['award_min'], $awardRange['award_max']),'type' => 'box', 'receiveTime' => (($activityReceiveInfo['maxTime'] ? strtotime($activityReceiveInfo['maxTime']) + $activityInfo['activity_duration'] * 60 : time())) * 1000);
-        }
-        $return['maxReceive'] = $activityInfo['activity_max'];
-        $return['currentReceive'] = $activityReceiveInfo['count'];
-        $return['serverTime'] = time() * 1000;
-        return $return;
+
+
+        $sql = 'SELECT counter count, config_type type, award_min num FROM t_award_config WHERE config_type = ? ORDER BY counter';
+        $awardList = $this->db->getAll($sql, 'sign');
+
+        $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND gold_source = ?';
+        $totalSign = $this->db->getOne($sql, $this->userId, 'sign') ?: 0;
+//        $this->model->gold->totalSign($this->userId);
+        $sql = 'SELECT gold_id FROM t_gold WHERE user_id = ? AND gold_source = ? AND change_date = ?';
+        $isTodaySign = $this->db->getOne($sql, $this->userId, 'sign', date('Y-m-d'));
+        $currentDays = (($totalSign + ($isTodaySign ? 0 : 1)) % 7) ?: 7;
+
+//        $sql = 'SELECT * FROM t_gold WHERE user_id = ?  AND gold_source = ? ORDER BY gold_id DESC LIMIT ' . ($currentDays - ($isTodaySign ? 0 : 1));
+//        $receiveList = $this->db->getAll($sql, $this->userId, 'sign');
+
+        $awardList[$currentDays] = array_merge($awardList[$currentDays], array('isReceive' => $isTodaySign ? 1 : 0));
+        return array('totalSign' => $totalSign, 'currentDays' => $currentDays, 'signList' => $awardList);
+
     }
 }

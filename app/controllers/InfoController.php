@@ -38,7 +38,6 @@ class InfoController extends Controller
     public function taskAction () {
         $taskClass = new \Core\Task($this->userId);
         $adClass = new \Core\Ad($this->userId);
-        var_dump($taskClass->getInfo('sign'));exit;
-        return array('signInfo' => $taskClass->getInfo('sign'), 'taskTop' => $adClass->getInfo('task_top'), 'taskDaily' => $adClass->getInfo('task_daily'), 'taskNewer' => $adClass->getInfo('task_newer'));
+        return array('signInfo' => $taskClass->getInfo('sign'), 'taskTop' => $adClass->getInfo('taskTop'), 'taskDaily' => $adClass->getInfo('taskDaily'), 'taskNewer' => $adClass->getInfo('taskNewer'));
     }
 }

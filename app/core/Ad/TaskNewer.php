@@ -7,6 +7,6 @@ use Core\Ad;
 class TaskNewer extends Ad
 {
     protected function _getInfo() {
-        return array(array('img' => OSS_HOST . 'ad/startBot1.png', 'type' => 'interior', 'url' => 'walkStage'), array('img' => OSS_HOST . 'ad/startBot2.png', 'type' => 'interior', 'url' => 'lottery'), array('img' => OSS_HOST . 'ad/startBot3.png', 'type' => 'interior', 'url' => 'clockIn'));
+        return array(array('name' => '绑定微信', 'desc' => '让每一步更有价值', 'type' => 'task', 'url' => 'wechat', 'award' => 2000, 'isComplete' => 1), array('name' => '填写邀请码', 'desc' => '让每一步更有价值', 'type' => 'task', 'url' => 'invitedCode', 'award' => 2000, 'isComplete' => 0));
     }
 }
