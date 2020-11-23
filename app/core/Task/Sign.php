@@ -22,7 +22,7 @@ class Sign extends Task
 //        $sql = 'SELECT * FROM t_gold WHERE user_id = ?  AND gold_source = ? ORDER BY gold_id DESC LIMIT ' . ($currentDays - ($isTodaySign ? 0 : 1));
 //        $receiveList = $this->db->getAll($sql, $this->userId, 'sign');
 
-        $awardList[$currentDays] = array_merge($awardList[$currentDays], array('isReceive' => $isTodaySign ? 1 : 0));
+        $awardList[$currentDays-1] = array_merge($awardList[$currentDays-1], array('isReceive' => $isTodaySign ? 1 : 0));
         return array('totalSign' => $totalSign, 'currentDays' => $currentDays, 'signList' => $awardList);
 
     }
