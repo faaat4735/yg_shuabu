@@ -62,12 +62,34 @@ class InfoController extends Controller
         return array('list' => $taskClass->getInfo('walkStage'));
     }
 
+    /** 喝水打卡活动信息
+     * @return array
+     */
     public function drinkAction () {
         $taskClass = new \Core\Task($this->userId);
         return array('list' => $taskClass->getInfo('drink'));
     }
 
+    /**
+     * 金币明细
+     * @return array
+     */
     public function goldDetailsAction () {
         return array('list' => $this->model->gold->details($this->userId));
+    }
+
+    /**
+     * 提现页面信息
+     * @return array
+     */
+    public function withdrawAction () {
+        $sql = 'SELECT wechat_unionid FROM t_user WHERE user_id = ?';
+        $isBindWechat = $this->db->getOne($sql, $this->userId) ? 1 :0;
+        $withdrawArr = array(0.3, 20, 50, 100, 150, 200);
+        // todo， 添加0.3提现只能一次。
+        foreach ($withdrawArr as $amount) {
+            $withdrawList[] = array('amount' => $amount, 'gold' => $amount * 10000);
+        }
+        return array('isBindWechat' => $isBindWechat, 'withdrawList' => $withdrawList);
     }
 }
