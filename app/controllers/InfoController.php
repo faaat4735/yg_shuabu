@@ -66,4 +66,8 @@ class InfoController extends Controller
         $taskClass = new \Core\Task($this->userId);
         return array('list' => $taskClass->getInfo('drink'));
     }
+
+    public function goldDetailsAction () {
+        return array('list' => $this->model->gold->details($this->userId));
+    }
 }

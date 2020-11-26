@@ -77,4 +77,9 @@ class GoldModel extends Model
         }
         return TRUE;
     }
+
+    public function details ($userId) {
+        $sql = 'SELECT g.gold_amount amount, UNIX_TIMESTAMP(g.create_time) * 1000 time, a.activity_name name FROM t_gold g LEFT JOIN t_activity a ON g.gold_source = a.activity_type WHERE g.user_id = ? AND g.create_time >= ? ORDER BY g.gold_id DESC';
+        return $this->db->getAll($sql, $userId, date('Y-m-d', strtotime('-7 days')));
+    }
 }
