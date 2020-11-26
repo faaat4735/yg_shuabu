@@ -61,4 +61,9 @@ class InfoController extends Controller
         $taskClass = new \Core\Task($this->userId);
         return array('list' => $taskClass->getInfo('walkStage'));
     }
+
+    public function drinkAction () {
+        $taskClass = new \Core\Task($this->userId);
+        return array('list' => $taskClass->getInfo('drink'));
+    }
 }

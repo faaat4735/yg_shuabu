@@ -21,6 +21,7 @@ return array(
     'Core\\Model' => $baseDir . '/app/core/Model.php',
     'Core\\Task' => $baseDir . '/app/core/Task.php',
     'Core\\Task\\Box' => $baseDir . '/app/core/Task/Box.php',
+    'Core\\Task\\Drink' => $baseDir . '/app/core/Task/Drink.php',
     'Core\\Task\\Sign' => $baseDir . '/app/core/Task/Sign.php',
     'Core\\Task\\Walk' => $baseDir . '/app/core/Task/Walk.php',
     'Core\\Task\\WalkStage' => $baseDir . '/app/core/Task/WalkStage.php',

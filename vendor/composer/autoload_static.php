@@ -36,6 +36,7 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Core\\Model' => __DIR__ . '/../..' . '/app/core/Model.php',
         'Core\\Task' => __DIR__ . '/../..' . '/app/core/Task.php',
         'Core\\Task\\Box' => __DIR__ . '/../..' . '/app/core/Task/Box.php',
+        'Core\\Task\\Drink' => __DIR__ . '/../..' . '/app/core/Task/Drink.php',
         'Core\\Task\\Sign' => __DIR__ . '/../..' . '/app/core/Task/Sign.php',
         'Core\\Task\\Walk' => __DIR__ . '/../..' . '/app/core/Task/Walk.php',
         'Core\\Task\\WalkStage' => __DIR__ . '/../..' . '/app/core/Task/WalkStage.php',
