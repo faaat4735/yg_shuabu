@@ -24,4 +24,5 @@ class UserController extends Controller
             return $this->model->user->createUser($this->inputData['deviceId'], $this->inputData['userDeviceInfo']);
         }
     }
+
 }

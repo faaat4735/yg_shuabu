@@ -41,7 +41,7 @@ class Task extends Controller
             return $verifyGold;
         }
         // 领取
-        $className = '\\Core\\Task\\' . ucfirst($data['type']);
+        $className = '\\Core\\Task\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $data['type'])));
         if (class_exists($className)) {
             $this->className = new $className($this->userId);
             $this->className->type = $data['type'];
