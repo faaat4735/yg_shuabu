@@ -102,4 +102,37 @@ class ActionController extends Controller
         return $return;
     }
 
+    public function requestWithdrawAction () {
+        if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.3, 20, 50, 100, 150, 200))) {
+            return 202;
+        }
+        $sql = 'SELECT wechat_unionid, wechat_openid, user_status FROM t_user WHERE user_id = ?';
+        $payInfo = $this->db->getRow($sql, $this->userId);
+        if (!$payInfo['user_status']) {
+            return 310;
+        }
+        if (!$payInfo['wechat_unionid']) {
+            return 311;
+        }
+        //todo 添加支付宝实名认证
+
+        $withdrawalGold = $this->inputData['amount'] * 10000;
+        $currentGold = $this->model->gold->total($this->userId, 'current');
+        if ($currentGold < $withdrawalGold) {
+            return 312;
+        }
+        if (0.3 == $this->inputData['amount']) {
+            $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = 0.3 AND (withdraw_status = "pending" OR withdraw_status = "success")';
+            if ($this->db->getOne($sql, $this->userId)) {
+                return 313;
+            }
+        }
+        //todo 高并发多次插入记录问题 加锁解决
+//        $sql = 'INSERT INTO t_withdraw (user_id, withdraw_amount, withdraw_gold, withdraw_status, withdraw_method, wechat_openid) SELECT :user_id, :withdraw_amount,:withdraw_gold, :withdraw_status, :withdraw_method, :wechat_openid FROM DUAL WHERE NOT EXISTS (SELECT withdraw_id FROM t_withdraw WHERE user_id = :user_id AND withdraw_amount = :withdraw_amount AND withdraw_status = :withdraw_status)';
+//        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_method' => 'wechat', 'withdraw_status' => 'pending', 'wechat_openid' => $payInfo['wechat_openid']));
+        $sql = 'INSERT INTO t_withdraw SET user_id = :user_id, withdraw_amount = :withdraw_amount, withdraw_gold = :withdraw_gold, withdraw_status = :withdraw_status, withdraw_account = :withdraw_account';
+        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payInfo['wechat_openid']));
+        return array();
+    }
+
 }

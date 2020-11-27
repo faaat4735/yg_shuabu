@@ -86,10 +86,26 @@ class InfoController extends Controller
         $sql = 'SELECT wechat_unionid FROM t_user WHERE user_id = ?';
         $isBindWechat = $this->db->getOne($sql, $this->userId) ? 1 :0;
         $withdrawArr = array(0.3, 20, 50, 100, 150, 200);
-        // todo， 添加0.3提现只能一次。
         foreach ($withdrawArr as $amount) {
+            // 0.3提现只能一次。
+            if (0.3 == $amount) {
+                $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = 0.3 AND (withdraw_status = "pending" OR withdraw_status = "success")';
+                if ($this->db->getOne($sql, $this->userId)) {
+                    continue;
+                }
+            }
             $withdrawList[] = array('amount' => $amount, 'gold' => $amount * 10000);
         }
         return array('isBindWechat' => $isBindWechat, 'withdrawList' => $withdrawList);
+    }
+
+    /**
+     * 提现明细
+     * @return array
+     */
+    public function withdrawDetailsAction () {
+        $sql = 'SELECT withdraw_amount amount, CASE withdraw_status WHEN "pending" THEN \'审核中\' WHEN "failure" THEN \'审核失败\' ELSE \'审核成功\' END status, "微信" method, UNIX_TIMESTAMP(create_time) * 1000 time FROM t_withdraw WHERE user_id = ? ORDER BY withdraw_id DESC';
+        $withdrawList = $this->db->getAll($sql, $this->userId);
+        return array('list' => $withdrawList);
     }
 }
