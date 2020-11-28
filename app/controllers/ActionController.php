@@ -102,6 +102,10 @@ class ActionController extends Controller
         return $return;
     }
 
+    /**
+     * 申请提现
+     * @return array|int
+     */
     public function requestWithdrawAction () {
         if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.3, 20, 50, 100, 150, 200))) {
             return 202;
@@ -133,6 +137,88 @@ class ActionController extends Controller
         $sql = 'INSERT INTO t_withdraw SET user_id = :user_id, withdraw_amount = :withdraw_amount, withdraw_gold = :withdraw_gold, withdraw_status = :withdraw_status, withdraw_account = :withdraw_account';
         $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payInfo['wechat_openid']));
         return array();
+    }
+
+    /**
+     * 用户反馈
+     * @return ApiReturn|int
+     */
+    public function feedbackAction () {
+        if (!isset($this->inputData['content']) && $this->inputData['content']) {
+            return 202;
+        }
+        //判断多次提交需要超过多久
+        $sql = 'SELECT create_time FROM t_user_feedback WHERE user_id = ? ORDER BY feedback_id DESC';
+        $lastUpload = $this->db->getOne($sql, $this->userId);
+        if ($lastUpload && (time() - strtotime($lastUpload) < 600)) {
+            return 314;
+        }
+
+        $image1 = $image2 = $image3 = FALSE;
+        foreach (array('image1', 'image2', 'image3') as $image) {
+            if (isset($this->inputData[$image]) && $this->inputData[$image]) {
+                $$image = $this->uploadImage($this->inputData[$image]);
+                if (FALSE === $$image) {
+                    continue;
+                }
+            }
+        }
+
+        $sql = 'INSERT INTO t_user_feedback SET user_id = :user_id, content = :content, phone = :phone, image_1 = :image_1, image_2 = :image_2, image_3 = :image_3';
+        $this->db->exec($sql, array(
+            'user_id' => $this->userId,
+            'content' => $this->inputData['content'],
+            'phone' => $this->inputData['phone'] ?? 0,
+            'image_1' => $image1 ?: '',
+            'image_2' => $image2 ?: '',
+            'image_3' => $image3 ?: '',
+        ));
+        return array();
+    }
+
+    /**
+     * 保存用户上传图片
+     * @param $code base64
+     * @return ApiReturn|string
+     */
+    protected function uploadImage ($code) {
+//        strlen($code);
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $code, $result)){
+            $ext = strtolower($result[2]);
+//            if (!in_array($ext, array('jpg','jpeg', 'png', 'gif', 'bmp'))) {
+//                return new ApiReturn('', 313,'上传图片格式不正确');
+//            }
+
+            $length = strlen($code) - strlen($result[1]);
+            $size = $length - $length / 4;
+            if ($size > 1024 * 1024) {
+                return FALSE;
+            }
+            $saveFile = (ENV_PRODUCTION ? '' : 'test-') . substr(md5(substr($code, 20)), 10) . time() . '.' . strtolower($ext);
+
+            file_put_contents('/tmp/' . $saveFile, base64_decode(str_replace($result[1], '', $code)));
+
+            $oss = new \Core\Oss();
+            $uploadReturn = $oss->upload('upload/' . $saveFile, '/tmp/' . $saveFile);
+            if ($uploadReturn !== TRUE) {
+                return FALSE;
+            }
+            return 'upload/' . $saveFile;
+
+//            $saveFile = date('Ymd') . '/';
+//            if (!is_dir(UPLOAD_IMAGE_DIR . $saveFile)) {
+//                $a = mkdir(UPLOAD_IMAGE_DIR . $saveFile, 0755, true);
+//            }
+//
+//            if (file_put_contents(UPLOAD_IMAGE_DIR . $saveFile, base64_decode(str_replace($result[1], '', $code)))) {
+//                return 'upload/image/' . $saveFile;
+//            } else {
+//                return new ApiReturn('', 314,'上传失败');
+//            }
+        }else{
+            echo 111;
+            return FALSE;
+        }
     }
 
 }

@@ -19,6 +19,7 @@ return array(
     'Core\\DB\\Pdo' => $baseDir . '/app/core/DB/Pdo.php',
     'Core\\Db' => $baseDir . '/app/core/Db.php',
     'Core\\Model' => $baseDir . '/app/core/Model.php',
+    'Core\\Oss' => $baseDir . '/app/core/Oss.php',
     'Core\\Task' => $baseDir . '/app/core/Task.php',
     'Core\\Task\\Box' => $baseDir . '/app/core/Task/Box.php',
     'Core\\Task\\Drink' => $baseDir . '/app/core/Task/Drink.php',
