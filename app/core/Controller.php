@@ -43,7 +43,6 @@ class Controller
      * @return bool
      */
     public function checkHeader($checkToken = TRUE) {
-//        return TRUE;// todo debug删除
         // HTTP_VERSION_CODE
         // HTTP_SOURCE
         // HTTP_TIME

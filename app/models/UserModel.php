@@ -10,7 +10,7 @@ class UserModel extends Model
      * @return bool
      */
     public function getUserInfoByDeviceId ($deviceId) {
-        $sql = 'SELECT user_id, access_token accessToken, nickname, headimgurl FROM t_user WHERE device_id = ?';
+        $sql = 'SELECT user_id, access_token accessToken, nickname, headimgurl, invited_code invitedCode FROM t_user WHERE device_id = ?';
         $userInfo = $this->db->getRow($sql, $deviceId);
         if ($userInfo) {
             $this->updateLoginTime($userInfo['user_id']);
@@ -37,7 +37,7 @@ class UserModel extends Model
         $this->db->exec($sql, $_SERVER['source'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode);
         // 返回信息
         $this->updateLoginTime($this->db->lastInsertId());
-        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0);
+        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode);
     }
 
     /**
