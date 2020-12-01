@@ -37,14 +37,4 @@ class Drink extends Task
         return $taskAward;
 //        return $this->model->walkStage->receiveInfo($this->userId);
     }
-
-    /**
-     *
-     * @param $data
-     * @return array
-     */
-    protected function _receiveAward ($data) {
-        $this->model->gold->insert(array('user_id' => $this->userId, 'gold_count' => $data['count'], 'gold_amount' => $data['num'], 'gold_source' => $data['type']));
-        return array();
-    }
 }

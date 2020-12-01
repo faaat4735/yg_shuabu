@@ -141,7 +141,7 @@ class ActionController extends Controller
 
     /**
      * 用户反馈
-     * @return ApiReturn|int
+     * @return array|int
      */
     public function feedbackAction () {
         if (!isset($this->inputData['content']) && $this->inputData['content']) {
@@ -179,7 +179,7 @@ class ActionController extends Controller
     /**
      * 保存用户上传图片
      * @param $code base64
-     * @return ApiReturn|string
+     * @return bool|string
      */
     protected function uploadImage ($code) {
 //        strlen($code);
