@@ -12,6 +12,7 @@
     "classmap": [
       "app/controllers",
       "app/core",
+      "app/admin",
       "app/models"
     ]
   }
