@@ -14,10 +14,13 @@ Class BaseController extends Controller {
                 }
             }
         }
-        return 'Login failure';
+        $return = array('status' => 'error', 'data' => '登录失败', 'msg' => '');
+        echo json_encode($return);;
+        exit;
     }
     
     public function menuAction() {
+        return array();
         return  array('list' => array(
             array('id' => '1', 'resName' => '计步宝', 'resKey'=> 'menu_stepcounter', 'resIcon'=> 'xtxg', 'children' => array(
                 array( 'resName' => '首页', 'resKey'=> 'index'),
