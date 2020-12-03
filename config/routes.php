@@ -2,6 +2,21 @@
 
 use NoahBuscher\Macaw\Macaw;
 
+Macaw::any('/admin/(:all)/(:all)', function($controller, $action) {
+    $controllerName = '\\Admin\\' .ucfirst($controller) . 'Controller';
+    $controllerClass = new $controllerName();
+    $actionName = $action . 'Action';
+    if (!method_exists($controllerClass, $actionName)) {
+        $return = '未找到';
+        echo $return;
+        exit;
+    }
+    $result = $controllerClass->$actionName();
+    $return = array('status' => 'ok', 'data' => $result, 'msg' => '');
+    echo $return;
+    exit;
+});
+
 Macaw::any('/(:all)/(:all)', function($controller, $action) {
     $controllerName = '\\Controller\\' .ucfirst($controller) . 'Controller';
     $controllerClass = new $controllerName();
