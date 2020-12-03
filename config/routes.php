@@ -13,7 +13,7 @@ Macaw::any('/admin/(:all)/(:all)', function($controller, $action) {
     }
     $result = $controllerClass->$actionName();
     $return = array('status' => 'ok', 'data' => $result, 'msg' => '');
-    echo $return;
+    echo json_encode($return);;
     exit;
 });
 
