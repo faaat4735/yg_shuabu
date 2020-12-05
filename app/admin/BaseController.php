@@ -20,16 +20,7 @@ Class BaseController extends Controller {
     }
     
     public function menuAction() {
-        return array('id' => '1', 'resName' => '走路多多', 'resKey'=> 'menu_zou', 'resIcon'=> 'xtxg', 'children' => array(
-            array( 'resName' => '首页', 'resKey'=> 'zou-index'),
-            array( 'resName' => '运营位管理', 'resKey'=> 'zou-ad'),
-            array( 'resName' => '广告频闭', 'resKey'=> 'zou-version-ad'),
-            array( 'id' => '1-1', 'resName' => '用户管理', 'resKey'=> 'menu_zou_user', 'children' => array(
-                array( 'resName' => '用户明细', 'resKey'=> 'zou-user'),
-                array( 'resName' => '用户提现', 'resKey'=> 'zou-withdraw'),
-                array( 'resName' => '用户反馈', 'resKey'=> 'zou-feedback'),
-                array( 'resName' => '用户邀请', 'resKey'=> 'zou-invited')
-            ))));
+        return array('list' => array(array('id' => 1, 'resName' => '用户明细', 'resKey'=> 'shuabu-user'), array('id' => 2, 'resName' => '用户提现', 'resKey'=> 'shuabu-withdraw'), array('id' => 3, 'resName' => '用户反馈', 'resKey'=> 'shuabu-feedback'), array('id' => 4, 'resName' => '广告频闭', 'resKey'=> 'shuabu-version-ad')));
     }
     
     public function userInfoAction () {

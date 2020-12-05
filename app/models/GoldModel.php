@@ -90,4 +90,14 @@ class GoldModel extends Model
         $sql = 'SELECT g.gold_amount amount, UNIX_TIMESTAMP(g.create_time) * 1000 time, a.activity_name name FROM t_gold g LEFT JOIN t_activity a ON g.gold_source = a.activity_type WHERE g.user_id = ? AND g.create_time >= ? ORDER BY g.gold_id DESC';
         return $this->db->getAll($sql, $userId, date('Y-m-d', strtotime('-7 days')));
     }
+
+    public function goldTotal ($userId) {
+        $sql = "SELECT COUNT(*) FROM t_gold WHERE user_id = ?";
+        return $this->db->getOne($sql, $userId);
+    }
+
+    public function goldDetails ($userId, $limit) {
+        $sql = 'SELECT g.gold_amount amount, g.create_time, a.activity_name name FROM t_gold g LEFT JOIN t_activity a ON g.gold_source = a.activity_type WHERE g.user_id = ? ORDER BY g.gold_id DESC LIMIT ' . $limit;
+        return $this->db->getAll($sql, $userId);
+    }
 }

@@ -6,6 +6,8 @@ define('LOG_DIR', ROOT_DIR . 'log/');
 define('VENDOR_DIR', ROOT_DIR . 'vendor/');
 define('APP_DIR', ROOT_DIR  . 'app/');
 define('CORE_DIR', APP_DIR  . 'core/');
+define('CERT_DIR', ROOT_DIR  . 'cert/');
+
 
 
 /**
@@ -34,5 +36,11 @@ if (file_exists(CONFIG_DIR . 'config.private.php')) {
 !defined('ALI_KEYSECRET') && define('ALI_KEYSECRET', '');
 !defined('OSS_ENDPOINT') && define('OSS_ENDPOINT', '');
 !defined('OSS_BUCKET') && define('OSS_BUCKET', '');
+
+!defined('PAY_MODE') && define('PAY_MODE', FALSE);
+
+!defined('WECHAT_APPID') && define('WECHAT_APPID', '');
+!defined('WECHAT_ID') && define('WECHAT_ID', '');
+!defined('WECHAT_KEY') && define('WECHAT_KEY', '');
 
 require VENDOR_DIR . 'autoload.php';

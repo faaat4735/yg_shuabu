@@ -12,7 +12,11 @@ Macaw::any('/admin/(:all)/(:all)', function($controller, $action) {
         exit;
     }
     $result = $controllerClass->$actionName();
-    $return = array('status' => 'ok', 'data' => $result, 'msg' => '');
+    if (is_array($result)) {
+        $return = array('status' => 'ok', 'data' => $result, 'msg' => '');
+    } else {
+        $return = array('status' => 'error', 'data' => '', 'msg' => $result);
+    }
     echo json_encode($return);;
     exit;
 });

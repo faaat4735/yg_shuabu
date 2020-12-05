@@ -22,6 +22,9 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
 
     public static $classMap = array (
         'Admin\\BaseController' => __DIR__ . '/../..' . '/app/admin/BaseController.php',
+        'Admin\\UserController' => __DIR__ . '/../..' . '/app/admin/UserController.php',
+        'Admin\\VersionController' => __DIR__ . '/../..' . '/app/admin/VersionController.php',
+        'Admin\\WithdrawController' => __DIR__ . '/../..' . '/app/admin/WithdrawController.php',
         'Controller\\ActionController' => __DIR__ . '/../..' . '/app/controllers/ActionController.php',
         'Controller\\InfoController' => __DIR__ . '/../..' . '/app/controllers/InfoController.php',
         'Controller\\UserController' => __DIR__ . '/../..' . '/app/controllers/UserController.php',
@@ -42,11 +45,13 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Core\\Task\\Sign' => __DIR__ . '/../..' . '/app/core/Task/Sign.php',
         'Core\\Task\\Walk' => __DIR__ . '/../..' . '/app/core/Task/Walk.php',
         'Core\\Task\\WalkStage' => __DIR__ . '/../..' . '/app/core/Task/WalkStage.php',
+        'Core\\Wxpay' => __DIR__ . '/../..' . '/app/core/Wxpay.php',
         'Model\\ActivityModel' => __DIR__ . '/../..' . '/app/models/ActivityModel.php',
         'Model\\GoldModel' => __DIR__ . '/../..' . '/app/models/GoldModel.php',
         'Model\\UserModel' => __DIR__ . '/../..' . '/app/models/UserModel.php',
         'Model\\WalkModel' => __DIR__ . '/../..' . '/app/models/WalkModel.php',
         'Model\\WalkStageModel' => __DIR__ . '/../..' . '/app/models/WalkStageModel.php',
+        'Model\\WithdrawModel' => __DIR__ . '/../..' . '/app/models/WithdrawModel.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -6,10 +6,20 @@ class Controller
 {
     protected $inputData;
     protected $userId;
+    protected $page;
+    protected $limitStart = 0;
+    protected $limitCount = 10;
 
     public function __construct()
     {
         $this->inputData = json_decode(file_get_contents("php://input"), TRUE);
+        if (isset($_POST['pageSize'])) {
+            $this->limitCount = $_POST['pageSize'];
+            if (isset($_POST['pageNo'])) {
+                $this->limitStart = ($_POST['pageNo'] - 1) * $_POST['pageSize'];
+            }
+        }
+        $this->page = $this->limitStart . ', ' . $this->limitCount;
     }
 
     public function init () {

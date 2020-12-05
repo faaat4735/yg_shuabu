@@ -7,6 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Admin\\BaseController' => $baseDir . '/app/admin/BaseController.php',
+    'Admin\\UserController' => $baseDir . '/app/admin/UserController.php',
+    'Admin\\VersionController' => $baseDir . '/app/admin/VersionController.php',
+    'Admin\\WithdrawController' => $baseDir . '/app/admin/WithdrawController.php',
     'Controller\\ActionController' => $baseDir . '/app/controllers/ActionController.php',
     'Controller\\InfoController' => $baseDir . '/app/controllers/InfoController.php',
     'Controller\\UserController' => $baseDir . '/app/controllers/UserController.php',
@@ -27,9 +30,11 @@ return array(
     'Core\\Task\\Sign' => $baseDir . '/app/core/Task/Sign.php',
     'Core\\Task\\Walk' => $baseDir . '/app/core/Task/Walk.php',
     'Core\\Task\\WalkStage' => $baseDir . '/app/core/Task/WalkStage.php',
+    'Core\\Wxpay' => $baseDir . '/app/core/Wxpay.php',
     'Model\\ActivityModel' => $baseDir . '/app/models/ActivityModel.php',
     'Model\\GoldModel' => $baseDir . '/app/models/GoldModel.php',
     'Model\\UserModel' => $baseDir . '/app/models/UserModel.php',
     'Model\\WalkModel' => $baseDir . '/app/models/WalkModel.php',
     'Model\\WalkStageModel' => $baseDir . '/app/models/WalkStageModel.php',
+    'Model\\WithdrawModel' => $baseDir . '/app/models/WithdrawModel.php',
 );
