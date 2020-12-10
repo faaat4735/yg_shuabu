@@ -15,6 +15,8 @@ class UserModel extends Model
         if ($userInfo) {
             $this->updateLoginTime($userInfo['user_id']);
             $userInfo['currentGold'] = $this->gold->total($userInfo['user_id'], 'current');
+            $userInfo['todayGold'] = $this->gold->todayGold($userInfo['user_id']);
+            $userInfo['newerAward'] = 0;
             unset($userInfo['user_id']);
             return $userInfo;
         } else {
@@ -37,7 +39,9 @@ class UserModel extends Model
         $this->db->exec($sql, $_SERVER['HTTP_SOURCE'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode);
         // 返回信息
         $this->updateLoginTime($this->db->lastInsertId());
-        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode);
+        $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
+        $newerAward = $this->db->getOne($sql);
+        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward);
     }
 
     /**

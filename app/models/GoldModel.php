@@ -30,7 +30,10 @@ class GoldModel extends Model
 //            return new ApiReturn('', 203, '抱歉您的账户已被冻结');
 //        }
         if (isset($data['isDouble']) && $data['isDouble']) {
-            $data['gold_amount'] = $data['gold_amount'] * 2;
+            // 很多类型不能双倍 加上判断 todo
+            if (!in_array($data['gold_source'], array('newer', 'walk_stage'))) {
+                $data['gold_amount'] = $data['gold_amount'] * 2;
+            }
         }
         $insertData = array('user_id' => $data['user_id'], 'gold_amount' => $data['gold_amount'], 'gold_source' => $data['gold_source'], 'gold_count' => $data['gold_count'], 'change_date' => date('Y-m-d'));
         $sql = 'INSERT INTO t_gold (user_id, gold_count, gold_amount, gold_source, change_date) SELECT :user_id, :gold_count, :gold_amount, :gold_source, :change_date FROM DUAL WHERE NOT EXISTS (SELECT gold_id FROM t_gold WHERE user_id = :user_id AND gold_count = :gold_count AND gold_source = :gold_source AND change_date = :change_date)';
@@ -99,5 +102,10 @@ class GoldModel extends Model
     public function goldDetails ($userId, $limit) {
         $sql = 'SELECT g.gold_amount amount, g.create_time, a.activity_name name FROM t_gold g LEFT JOIN t_activity a ON g.gold_source = a.activity_type WHERE g.user_id = ? ORDER BY g.gold_id DESC LIMIT ' . $limit;
         return $this->db->getAll($sql, $userId);
+    }
+
+    public function todayGold ($userId) {
+        $sql = 'SELECT IFNULL(SUM(gold_amount), 0) FROM t_gold WHERE user_id = ? AND change_date = ?';
+        return $this->db->getOne($sql, $userId, date('Y-m-d'));
     }
 }
