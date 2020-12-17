@@ -83,8 +83,8 @@ class InfoController extends Controller
      * @return array
      */
     public function withdrawAction () {
-        $sql = 'SELECT wechat_unionid FROM t_user WHERE user_id = ?';
-        $isBindWechat = $this->db->getOne($sql, $this->userId) ? 1 :0;
+        $sql = 'SELECT wechat_unionid, alipay_account FROM t_user WHERE user_id = ?';
+        $bindInfo = $this->db->getRow($sql, $this->userId);
         $withdrawArr = array(0.3, 20, 50, 100, 150, 200);
         foreach ($withdrawArr as $amount) {
             // 0.3提现只能一次。
@@ -96,7 +96,7 @@ class InfoController extends Controller
             }
             $withdrawList[] = array('amount' => $amount, 'gold' => $amount * 10000);
         }
-        return array('isBindWechat' => $isBindWechat, 'withdrawList' => $withdrawList);
+        return array('isBindWechat' => ($bindInfo && $bindInfo['wechat_unionid']) ? 1 : 0, 'withdrawList' => $withdrawList, 'isBindAlipay' => ($bindInfo && $bindInfo['alipay_account']) ? 1 : 0);
     }
 
     /**

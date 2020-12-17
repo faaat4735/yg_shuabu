@@ -110,13 +110,17 @@ class ActionController extends Controller
         if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.3, 20, 50, 100, 150, 200))) {
             return 202;
         }
-        $sql = 'SELECT wechat_unionid, wechat_openid, user_status FROM t_user WHERE user_id = ?';
+        $sql = 'SELECT wechat_unionid, wechat_openid, user_status, alipay_account, alipay_name FROM t_user WHERE user_id = ?';
         $payInfo = $this->db->getRow($sql, $this->userId);
         if (!$payInfo['user_status']) {
             return 310;
         }
-        if (!$payInfo['wechat_unionid']) {
-            return 311;
+//        if (!$payInfo['wechat_unionid']) {
+//            return 311;
+//        }
+        // 20201217 微信提现转支付宝提现
+        if (!$payInfo['alipay_account']) {
+            return 316;
         }
         //todo 添加支付宝实名认证
 
@@ -134,8 +138,8 @@ class ActionController extends Controller
         //todo 高并发多次插入记录问题 加锁解决
 //        $sql = 'INSERT INTO t_withdraw (user_id, withdraw_amount, withdraw_gold, withdraw_status, withdraw_method, wechat_openid) SELECT :user_id, :withdraw_amount,:withdraw_gold, :withdraw_status, :withdraw_method, :wechat_openid FROM DUAL WHERE NOT EXISTS (SELECT withdraw_id FROM t_withdraw WHERE user_id = :user_id AND withdraw_amount = :withdraw_amount AND withdraw_status = :withdraw_status)';
 //        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_method' => 'wechat', 'withdraw_status' => 'pending', 'wechat_openid' => $payInfo['wechat_openid']));
-        $sql = 'INSERT INTO t_withdraw SET user_id = :user_id, withdraw_amount = :withdraw_amount, withdraw_gold = :withdraw_gold, withdraw_status = :withdraw_status, withdraw_account = :withdraw_account';
-        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payInfo['wechat_openid']));
+        $sql = 'INSERT INTO t_withdraw SET user_id = :user_id, withdraw_amount = :withdraw_amount, withdraw_gold = :withdraw_gold, withdraw_status = :withdraw_status, withdraw_account = :withdraw_account, withdraw_name = :withdraw_name, withdraw_method = :withdraw_method';
+        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payInfo['alipay_account'], 'withdraw_name' => $payInfo['alipay_name'], 'withdraw_method' => 'alipay'));
         return array();
     }
 
@@ -173,6 +177,29 @@ class ActionController extends Controller
             'image_2' => $image2 ?: '',
             'image_3' => $image3 ?: '',
         ));
+        return array();
+    }
+
+    /**
+     * 绑定支付宝账号
+     * @return array|int
+     */
+    public function alipayAction () {
+        if (!isset($this->inputData['name']) || !isset($this->inputData['account'])) {
+            return 202;
+        }
+        $sql = 'SELECT alipay_account FROM t_user WHERE user_id = ?';
+        $aliInfo = $this->db->getOne($sql, $this->userId);
+        if ($aliInfo) {
+            return 317;
+        }
+        $sql = 'SELECT user_id FROM t_user WHERE alipay_account = ?';
+        $bindInfo = $this->db->getOne($sql, $this->inputData['account']);
+        if ($bindInfo) {
+            return 318;
+        }
+        $sql = 'UPDATE t_user SET alipay_account = ?, alipay_name = ? WHERE user_id = ?';
+        $this->db->exec($sql, $this->inputData['account'], $this->inputData['name'], $this->userId);
         return array();
     }
 
@@ -220,5 +247,6 @@ class ActionController extends Controller
             return FALSE;
         }
     }
+
 
 }
