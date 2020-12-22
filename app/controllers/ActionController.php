@@ -72,7 +72,7 @@ class ActionController extends Controller
             return 307;
         }
         // 验证码无效，请填写比您先注册的用户的邀请码
-        $sql = 'SELECT create_time, unionid FROM t_user WHERE user_id = ?';
+        $sql = 'SELECT create_time, wechat_unionid FROM t_user WHERE user_id = ?';
         $invitedUserInfo = $this->db->getOne($sql, $this->userId);
         if (strtotime($invitedUserInfo['create_time']) <= strtotime($userInfo['create_time'])) {
             return 308;
