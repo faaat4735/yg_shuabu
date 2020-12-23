@@ -11,6 +11,7 @@ return array(
     'Admin\\VersionController' => $baseDir . '/app/admin/VersionController.php',
     'Admin\\WithdrawController' => $baseDir . '/app/admin/WithdrawController.php',
     'Controller\\ActionController' => $baseDir . '/app/controllers/ActionController.php',
+    'Controller\\ApiController' => $baseDir . '/app/controllers/ApiController.php',
     'Controller\\InfoController' => $baseDir . '/app/controllers/InfoController.php',
     'Controller\\UserController' => $baseDir . '/app/controllers/UserController.php',
     'Core\\Ad' => $baseDir . '/app/core/Ad.php',

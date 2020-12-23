@@ -26,6 +26,7 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Admin\\VersionController' => __DIR__ . '/../..' . '/app/admin/VersionController.php',
         'Admin\\WithdrawController' => __DIR__ . '/../..' . '/app/admin/WithdrawController.php',
         'Controller\\ActionController' => __DIR__ . '/../..' . '/app/controllers/ActionController.php',
+        'Controller\\ApiController' => __DIR__ . '/../..' . '/app/controllers/ApiController.php',
         'Controller\\InfoController' => __DIR__ . '/../..' . '/app/controllers/InfoController.php',
         'Controller\\UserController' => __DIR__ . '/../..' . '/app/controllers/UserController.php',
         'Core\\Ad' => __DIR__ . '/../..' . '/app/core/Ad.php',
