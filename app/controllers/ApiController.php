@@ -10,8 +10,13 @@ class ApiController
     }
 
     public function monitorAction () {
-        // todo 添加保留监测链接数据
-        return array();
+        if ($_GET) {
+            $sql = 'INSERT INTO t_ocean_monitor SET imei_md5 = ?, oaid = ?, androidid_md5 = ?, mac_md5 = ?, ad_id = ?, params = ?';
+            $this->db->exec($sql, $_GET['imei'] ?? '', $_GET['oaid'] ?? '', $_GET['androidid'] ?? '', $_GET['mac'] ?? '', $_GET['adid'] ?? '', json_encode($_GET));
+        }
+        $return = array('code' => '200', 'msg' => '保存成功');
+        echo json_encode($return);
+        exit;
     }
 
 
