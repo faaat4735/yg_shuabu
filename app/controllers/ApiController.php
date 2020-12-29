@@ -2,7 +2,8 @@
 
 namespace Controller;
 
-class ApiController
+use Core\Controller;
+class ApiController extends Controller
 {
 
     public function init() {
