@@ -6,7 +6,7 @@ class ApiController
 {
 
     public function init() {
-
+        return TRUE;
     }
 
     public function monitorAction () {
