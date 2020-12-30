@@ -41,6 +41,7 @@ class UserModel extends Model
         $this->updateLoginTime($this->db->lastInsertId());
         $callbackUrl = $this->callback($deviceInfo['OAID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['MAC'] ?? '');
         if ($callbackUrl) {
+            file_put_contents(LOG_DIR . 'access.log', $callbackUrl . '用户激活' . PHP_EOL, FILE_APPEND);
             file_get_contents($callbackUrl);
         }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
