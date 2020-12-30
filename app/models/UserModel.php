@@ -39,6 +39,10 @@ class UserModel extends Model
         $this->db->exec($sql, $_SERVER['HTTP_SOURCE'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode);
         // 返回信息
         $this->updateLoginTime($this->db->lastInsertId());
+        $callbackUrl = $this->callback($deviceInfo['OAID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['MAC'] ?? '');
+        if ($callbackUrl) {
+            file_get_contents($callbackUrl);
+        }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
         $newerAward = $this->db->getOne($sql);
         return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward);
@@ -79,6 +83,42 @@ class UserModel extends Model
         // 更新用户最后登陆时间
         $sql = 'UPDATE t_user SET last_login_time = ? WHERE user_id = ?';
         $this->db->exec($sql, date('Y-m-d H:i:s'), $userId);
+    }
+
+    /**
+     * @param $imei
+     * @param $androidid
+     * @param $mac
+     * @return array
+     */
+    public function callback ($oaid, $imei, $androidid, $mac) {
+        $callback = '';
+        if ($oaid) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE oaid = ? ORDER BY log_id DESC';
+            $callback = $this->db->getRow($sql, $oaid);
+        }
+        if ($imei) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE imei_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getRow($sql, md5($imei));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        if ($androidid) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE androidid_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getRow($sql, md5($androidid));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        if ($mac) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE mac_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getRow($sql, md5(str_replace(':', '', $mac)));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        return $callback;
     }
 
 }
