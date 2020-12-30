@@ -96,25 +96,25 @@ class UserModel extends Model
         $callback = '';
         if ($oaid) {
             $sql = 'SELECT callback FROM t_ocean_monitor WHERE oaid = ? ORDER BY log_id DESC';
-            $callback = $this->db->getRow($sql, $oaid);
+            $callback = $this->db->getOne($sql, $oaid);
         }
         if ($imei) {
             $sql = 'SELECT callback FROM t_ocean_monitor WHERE imei_md5 = ? ORDER BY log_id DESC';
-            $callback = $this->db->getRow($sql, md5($imei));
+            $callback = $this->db->getOne($sql, md5($imei));
         }
         if ($callback) {
             return $callback;
         }
         if ($androidid) {
             $sql = 'SELECT callback FROM t_ocean_monitor WHERE androidid_md5 = ? ORDER BY log_id DESC';
-            $callback = $this->db->getRow($sql, md5($androidid));
+            $callback = $this->db->getOne($sql, md5($androidid));
         }
         if ($callback) {
             return $callback;
         }
         if ($mac) {
             $sql = 'SELECT callback FROM t_ocean_monitor WHERE mac_md5 = ? ORDER BY log_id DESC';
-            $callback = $this->db->getRow($sql, md5(str_replace(':', '', $mac)));
+            $callback = $this->db->getOne($sql, md5(str_replace(':', '', $mac)));
         }
         if ($callback) {
             return $callback;
