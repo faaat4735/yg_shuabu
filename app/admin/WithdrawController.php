@@ -69,6 +69,7 @@ Class WithdrawController extends Controller {
                             break;
                         }
                     }
+                    return array();
                     $wechatPay = new \Core\Wxpay();
                     $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['wechat_openid']);
                     if (TRUE === $returnStatus) {
