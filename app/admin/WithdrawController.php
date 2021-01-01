@@ -69,9 +69,9 @@ Class WithdrawController extends Controller {
                             break;
                         }
                     }
-                    return array();
-                    $wechatPay = new \Core\Wxpay();
-                    $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['wechat_openid']);
+//                    $wechatPay = new \Core\Wxpay();
+//                    $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['wechat_openid']);
+                    $returnStatus = TRUE;
                     if (TRUE === $returnStatus) {
                         $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ?';
                         $withdrawCount = $this->db->getOne($sql, $payInfo['user_id']) ?: 0;
