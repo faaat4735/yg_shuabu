@@ -204,6 +204,21 @@ class ActionController extends Controller
     }
 
     /**
+     * 解绑微信
+     * @return array|int
+     */
+    public function cancelWechatAction () {
+        $sql = 'SELECT wechat_unionid, device_id FROM t_user WHERE user_id = ?';
+        $wechatInfo = $this->db->getRow($sql, $this->userId);
+        if (!$wechatInfo['wechat_unionid']) {
+            return 202;
+        }
+        $sql = 'UPDATE t_user SET nickname = ?, headimgurl = "" WHERE user_id = ?';
+        $this->db->exec($sql, '游客' . substr($wechatInfo['device_id'], -2) . date('md'), $this->userId);
+        return array();
+    }
+
+    /**
      * 保存用户上传图片
      * @param $code base64
      * @return bool|string
