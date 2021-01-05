@@ -104,7 +104,7 @@ class InfoController extends Controller
      * @return array
      */
     public function withdrawDetailsAction () {
-        $sql = 'SELECT withdraw_amount amount, CASE withdraw_status WHEN "pending" THEN \'审核中\' WHEN "failure" THEN \'审核失败\' ELSE \'审核成功\' END status, "微信" method, UNIX_TIMESTAMP(create_time) * 1000 time FROM t_withdraw WHERE user_id = ? ORDER BY withdraw_id DESC';
+        $sql = 'SELECT withdraw_amount amount, CASE withdraw_status WHEN "pending" THEN \'审核中\' WHEN "failure" THEN \'审核失败\' ELSE \'审核成功\' END status, "支付宝" method, UNIX_TIMESTAMP(create_time) * 1000 time, withdraw_remark reason FROM t_withdraw WHERE user_id = ? ORDER BY withdraw_id DESC';
         $withdrawList = $this->db->getAll($sql, $this->userId);
         return array('list' => $withdrawList);
     }
