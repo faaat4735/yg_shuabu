@@ -35,6 +35,11 @@ class ActionController extends Controller
         if ($unionInfo) {
             return 305;
         }
+        $sql = 'SELECT COUNT(*) FROM t_user_wechat_cancel WHERE wechat_unionid = ?';
+        $unionInfo = $this->db->getOne($sql, $this->inputData['unionid']);
+        if ($unionInfo) {
+            return 305;
+        }
         $sql = 'UPDATE t_user SET wechat_openid = ?, nickname = ?, language = ?, sex = ?, province = ?, city = ?, country = ?, headimgurl = ?, wechat_unionid = ? WHERE user_id = ?';
         $this->db->exec($sql, $this->inputData['openid'] ?? '', $this->inputData['nickname'] ?? '', $this->inputData['language'] ?? '', $this->inputData['sex'] ?? 0, $this->inputData['province'] ?? '', $this->inputData['city'] ?? '', $this->inputData['country'] ?? '', $this->inputData['headimgurl'] ?? '', $this->inputData['unionid'], $this->userId);
         $return = array();
@@ -213,8 +218,10 @@ class ActionController extends Controller
         if (!$wechatInfo['wechat_unionid']) {
             return 202;
         }
-        $sql = 'UPDATE t_user SET nickname = ?, headimgurl = "" WHERE user_id = ?';
+        $sql = 'UPDATE t_user SET nickname = ?, headimgurl = "", wechat_unionid = "" WHERE user_id = ?';
         $this->db->exec($sql, '游客' . substr($wechatInfo['device_id'], -2) . date('md'), $this->userId);
+        $sql = 'INSERT INTO t_user_wechat_cancel SET user_id = ?, wechat_unionid = ?';
+        $this->db->exec($sql, $this->userId, $wechatInfo['wechat_unionid']);
         return array();
     }
 
