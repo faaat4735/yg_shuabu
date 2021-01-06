@@ -62,7 +62,8 @@ class InfoController extends Controller
         return array('list' => $taskClass->getInfo('walkStage'));
     }
 
-    /** 喝水打卡活动信息
+    /**
+     * 喝水打卡活动信息
      * @return array
      */
     public function drinkAction () {
@@ -85,7 +86,7 @@ class InfoController extends Controller
     public function withdrawAction () {
         $sql = 'SELECT wechat_unionid, alipay_account FROM t_user WHERE user_id = ?';
         $bindInfo = $this->db->getRow($sql, $this->userId);
-        $withdrawArr = array(0.3, 20, 50, 100, 150, 200);
+        $withdrawArr = array(0.3, 5, 20, 50, 100, 200);
         foreach ($withdrawArr as $amount) {
             // 0.3提现只能一次。
             if (0.3 == $amount) {
