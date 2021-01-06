@@ -38,6 +38,7 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Core\\Controller' => __DIR__ . '/../..' . '/app/core/Controller.php',
         'Core\\DB\\Pdo' => __DIR__ . '/../..' . '/app/core/DB/Pdo.php',
         'Core\\Db' => __DIR__ . '/../..' . '/app/core/Db.php',
+        'Core\\Mail' => __DIR__ . '/../..' . '/app/core/Mail.php',
         'Core\\Model' => __DIR__ . '/../..' . '/app/core/Model.php',
         'Core\\Oss' => __DIR__ . '/../..' . '/app/core/Oss.php',
         'Core\\Task' => __DIR__ . '/../..' . '/app/core/Task.php',
@@ -53,6 +54,9 @@ class ComposerStaticInit407b1a1d21c575271f9d39c547c3e7b4
         'Model\\WalkModel' => __DIR__ . '/../..' . '/app/models/WalkModel.php',
         'Model\\WalkStageModel' => __DIR__ . '/../..' . '/app/models/WalkStageModel.php',
         'Model\\WithdrawModel' => __DIR__ . '/../..' . '/app/models/WithdrawModel.php',
+        'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/../..' . '/app/core/Mail/Exception.php',
+        'PHPMailer\\PHPMailer\\PHPMailer' => __DIR__ . '/../..' . '/app/core/Mail/PHPMailer.php',
+        'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/../..' . '/app/core/Mail/SMTP.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

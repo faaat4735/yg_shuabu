@@ -23,6 +23,7 @@ return array(
     'Core\\Controller' => $baseDir . '/app/core/Controller.php',
     'Core\\DB\\Pdo' => $baseDir . '/app/core/DB/Pdo.php',
     'Core\\Db' => $baseDir . '/app/core/Db.php',
+    'Core\\Mail' => $baseDir . '/app/core/Mail.php',
     'Core\\Model' => $baseDir . '/app/core/Model.php',
     'Core\\Oss' => $baseDir . '/app/core/Oss.php',
     'Core\\Task' => $baseDir . '/app/core/Task.php',
@@ -38,4 +39,7 @@ return array(
     'Model\\WalkModel' => $baseDir . '/app/models/WalkModel.php',
     'Model\\WalkStageModel' => $baseDir . '/app/models/WalkStageModel.php',
     'Model\\WithdrawModel' => $baseDir . '/app/models/WithdrawModel.php',
+    'PHPMailer\\PHPMailer\\Exception' => $baseDir . '/app/core/Mail/Exception.php',
+    'PHPMailer\\PHPMailer\\PHPMailer' => $baseDir . '/app/core/Mail/PHPMailer.php',
+    'PHPMailer\\PHPMailer\\SMTP' => $baseDir . '/app/core/Mail/SMTP.php',
 );
