@@ -112,7 +112,7 @@ class ActionController extends Controller
      * @return array|int
      */
     public function requestWithdrawAction () {
-        if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.3, 20, 50, 100, 150, 200))) {
+        if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.5, 20, 50, 100, 150, 200))) {
             return 202;
         }
         $sql = 'SELECT wechat_unionid, wechat_openid, user_status, alipay_account, alipay_name FROM t_user WHERE user_id = ?';
@@ -134,9 +134,9 @@ class ActionController extends Controller
         if ($currentGold < $withdrawalGold) {
             return 312;
         }
-        if (0.3 == $this->inputData['amount']) {
-            $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = 0.3 AND (withdraw_status = "pending" OR withdraw_status = "success")';
-            if ($this->db->getOne($sql, $this->userId)) {
+        if (0.5 == $this->inputData['amount']) {
+            $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
+            if ($this->db->getOne($sql, $this->userId, $this->inputData['amount'])) {
                 return 313;
             }
         }

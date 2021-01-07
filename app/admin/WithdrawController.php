@@ -61,7 +61,7 @@ Class WithdrawController extends Controller {
                 case 'success':
                     $sql = 'SELECT * FROM t_withdraw WHERE withdraw_id = ?';
                     $payInfo = $this->db->getRow($sql, $_POST['withdraw_id']);
-                    if (in_array($payInfo['withdraw_amount'], array(0.3))) {
+                    if (in_array($payInfo['withdraw_amount'], array(0.5))) {
                         $sql = 'SELECT COUNT(withdraw_id) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND withdraw_status = ?';
                         if ($this->db->getOne($sql, $payInfo['user_id'], $payInfo['withdraw_amount'], 'success')) {
                             //to do failure reason from api return

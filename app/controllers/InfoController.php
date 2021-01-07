@@ -86,12 +86,12 @@ class InfoController extends Controller
     public function withdrawAction () {
         $sql = 'SELECT wechat_unionid, alipay_account FROM t_user WHERE user_id = ?';
         $bindInfo = $this->db->getRow($sql, $this->userId);
-        $withdrawArr = array(0.3, 5, 20, 50, 100, 200);
+        $withdrawArr = array(0.5, 5, 20, 50, 100, 200);
         foreach ($withdrawArr as $amount) {
-            // 0.3提现只能一次。
-            if (0.3 == $amount) {
-                $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = 0.3 AND (withdraw_status = "pending" OR withdraw_status = "success")';
-                if ($this->db->getOne($sql, $this->userId)) {
+            // 0.5提现只能一次。
+            if (0.5 == $amount) {
+                $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
+                if ($this->db->getOne($sql, $this->userId, $amount)) {
                     continue;
                 }
             }
