@@ -29,6 +29,9 @@ $db = \Core\Db::getDbInstance();
 
 $sql = 'SELECT COUNT(withdraw_id) count, SUM(withdraw_amount) sum FROM t_withdraw WHERE withdraw_status = "pending"';
 $total = $db->getRow($sql);
+if (!$total['count']) {
+    exit;
+}
 
 $html .= sprintf($str, $total['count'] ?: 0, $total['sum'] ?: 0);
 

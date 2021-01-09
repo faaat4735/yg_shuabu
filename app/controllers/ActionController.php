@@ -265,7 +265,6 @@ class ActionController extends Controller
 //                return new ApiReturn('', 314,'上传失败');
 //            }
         }else{
-            echo 111;
             return FALSE;
         }
     }
