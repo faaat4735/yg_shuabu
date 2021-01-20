@@ -109,4 +109,13 @@ class InfoController extends Controller
         $withdrawList = $this->db->getAll($sql, $this->userId);
         return array('list' => $withdrawList);
     }
+
+    /**
+     *
+     */
+    public function adStatus () {
+        $sql = 'SELECT ad_status FROM t_version_ad WHERE version_id = ? AND app_name = ?';
+        $adStatus = $this->db->getOne($sql, $_SERVER['HTTP_VERSION_CODE'] ?? 0, $_SERVER['HTTP_SOURCE'] ?? '') ?: 0;
+        return array('adStatus' => $adStatus);
+    }
 }

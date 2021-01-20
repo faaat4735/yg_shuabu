@@ -18,7 +18,6 @@ class UserModel extends Model
             $userInfo['todayGold'] = $this->gold->todayGold($userInfo['user_id']);
             $userInfo['newerAward'] = 0;
             unset($userInfo['user_id']);
-            $userInfo['adStatus'] = 1;
             return $userInfo;
         } else {
             return FALSE;
@@ -46,7 +45,7 @@ class UserModel extends Model
         }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
         $newerAward = $this->db->getOne($sql);
-        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward, 'adStatus' => 1);
+        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward);
     }
 
     /**
