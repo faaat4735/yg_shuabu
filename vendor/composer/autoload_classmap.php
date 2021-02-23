@@ -30,6 +30,7 @@ return array(
     'Core\\Task\\Box' => $baseDir . '/app/core/Task/Box.php',
     'Core\\Task\\Drink' => $baseDir . '/app/core/Task/Drink.php',
     'Core\\Task\\Sign' => $baseDir . '/app/core/Task/Sign.php',
+    'Core\\Task\\Sport' => $baseDir . '/app/core/Task/Sport.php',
     'Core\\Task\\Walk' => $baseDir . '/app/core/Task/Walk.php',
     'Core\\Task\\WalkStage' => $baseDir . '/app/core/Task/WalkStage.php',
     'Core\\Wxpay' => $baseDir . '/app/core/Wxpay.php',

@@ -38,14 +38,16 @@ class UserModel extends Model
         $sql = 'INSERT INTO t_user SET user_source = ?, device_id = ?, access_token = ?, nickname = ?, OAID = ?, brand = ?, model = ?, SDKVersion = ?, AndroidId = ?, IMEI = ?, MAC = ?, invited_code = ?';
         $this->db->exec($sql, $_SERVER['HTTP_SOURCE'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode);
         // 返回信息
-        $this->updateLoginTime($this->db->lastInsertId());
+        $userId = $this->db->lastInsertId();
+        $this->updateLoginTime($userId);
         $callbackUrl = $this->callback($deviceInfo['OAID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['MAC'] ?? '');
         if ($callbackUrl) {
             file_get_contents($callbackUrl);
         }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
         $newerAward = $this->db->getOne($sql);
-        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward);
+        $this->gold->insert(array('user_id' => $userId, 'gold_count' => 1, 'gold_amount' => $newerAward, 'gold_source' => 'newer', 'isDouble' => 0));
+        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => $newerAward, 'newerAward' => $newerAward);
     }
 
     /**

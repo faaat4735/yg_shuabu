@@ -120,14 +120,43 @@ class ActionController extends Controller
         if (!$payInfo['user_status']) {
             return 310;
         }
-//        if (!$payInfo['wechat_unionid']) {
-//            return 311;
-//        }
         // 20201217 微信提现转支付宝提现
-        if (!$payInfo['alipay_account']) {
-            return 316;
+        switch ($_SERVER['HTTP_VERSION_CODE']) {
+            case '1.0':
+            case '1.1':
+            case '1.2':
+            case '1.3':
+                if (!$payInfo['alipay_account']) {
+                    return 316;
+                }
+                //todo 添加支付宝实名认证
+                $payMethod = 'alipay';
+                $payAccount = $payInfo['alipay_account'];
+                $payName = $payInfo['alipay_name'];
+                break;
+            default :
+                if (!isset($this->inputData['method']) && !in_array($this->inputData['method'], array('alipay', 'wechat'))) {
+                    return 202;
+                }
+                switch ($this->inputData['method']) {
+                    case 'alipay':
+                        if (!$payInfo['alipay_account']) {
+                            return 316;
+                        }
+                        $payMethod = 'alipay';
+                        $payAccount = $payInfo['alipay_account'];
+                        $payName = $payInfo['alipay_name'];
+                        break;
+                    case 'wechat':
+                        if (!$payInfo['wechat_unionid']) {
+                            return 311;
+                        }
+                        $payMethod = 'wechat';
+                        $payAccount = $payInfo['wechat_openid'];
+                        $payName = '';
+                        break;
+                }
         }
-        //todo 添加支付宝实名认证
 
         $withdrawalGold = $this->inputData['amount'] * 10000;
         $currentGold = $this->model->gold->total($this->userId, 'current');
@@ -144,7 +173,7 @@ class ActionController extends Controller
 //        $sql = 'INSERT INTO t_withdraw (user_id, withdraw_amount, withdraw_gold, withdraw_status, withdraw_method, wechat_openid) SELECT :user_id, :withdraw_amount,:withdraw_gold, :withdraw_status, :withdraw_method, :wechat_openid FROM DUAL WHERE NOT EXISTS (SELECT withdraw_id FROM t_withdraw WHERE user_id = :user_id AND withdraw_amount = :withdraw_amount AND withdraw_status = :withdraw_status)';
 //        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_method' => 'wechat', 'withdraw_status' => 'pending', 'wechat_openid' => $payInfo['wechat_openid']));
         $sql = 'INSERT INTO t_withdraw SET user_id = :user_id, withdraw_amount = :withdraw_amount, withdraw_gold = :withdraw_gold, withdraw_status = :withdraw_status, withdraw_account = :withdraw_account, withdraw_name = :withdraw_name, withdraw_method = :withdraw_method';
-        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payInfo['alipay_account'], 'withdraw_name' => $payInfo['alipay_name'], 'withdraw_method' => 'alipay'));
+        $this->db->exec($sql, array('user_id' => $this->userId, 'withdraw_amount' => $this->inputData['amount'], 'withdraw_gold' => $withdrawalGold, 'withdraw_status' => 'pending', 'withdraw_account' => $payAccount, 'withdraw_name' => $payName, 'withdraw_method' => $payMethod));
         return array();
     }
 
@@ -226,6 +255,72 @@ class ActionController extends Controller
     }
 
     /**
+     * 运动赚活动 开始运动
+     * @return array
+     */
+    public function sportStartAction () {
+        // 传入参数 第几个运动
+        $sql = 'SELECT counter, award_min FROM t_award_config WHERE config_type = ?';
+        $sportAward = $this->db->getPairs($sql, 'sport');
+        $sportInfo = array(1 => array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗20热量', 'time' => 1), 2 => array('name' => '慢慢扭头', 'desc' => '运动2分钟，可消耗50热量', 'time' => 2), 3 => array('name' => '出门散步', 'desc' => '运动5分钟，可消耗100热量', 'time' => 5), 4 => array('name' => '出门跑步', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30), 5 => array('name' => '打篮球', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30), 6 => array('name' => '踢足球', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30));
+        if (!isset($this->inputData['count']) || !in_array($this->inputData['count'], array_keys($sportInfo))) {
+            return 202;
+        }
+        // 判断是否有其他的未结束的
+        $sql = 'SELECT COUNT(sport_id) FROM t_activity_sport WHERE is_receive = 0 AND user_id = ? AND sport_date = ?';
+        if ($this->db->getOne($sql, $this->userId, date('Y-m-d'))) {
+            return 319;
+        }
+        // 判断当前运动是否可开始
+        $sql = 'SELECT COUNT(sport_id) FROM t_activity_sport WHERE user_id = ? AND sport_date = ? AND counter = ?';
+        if ($this->db->getOne($sql, $this->userId, date('Y-m-d'), $this->inputData['count'])) {
+            return 320;
+        }
+        // 开始运动 返回信息
+        $sql = 'INSERT INTO t_activity_sport SET user_id = ?, sport_date = ?, counter = ?, complete_time = ?';
+        $endTime = date('Y-m-d H:i:s', strtotime('+ ' . $sportInfo[$this->inputData['count']]['time'] . 'minute'));
+        $this->db->exec($sql, $this->userId, date('Y-m-d'), $this->inputData['count'], $endTime);
+        return array(array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 1, 'endTime' => strtotime($endTime) * 1000, 'serverTime' => time() * 1000, 'count' => $this->inputData['count']));
+    }
+
+    /**
+     * 运动赚活动加速
+     * @return array
+     */
+    public function sportSpeedAction () {
+        // 传入参数 第几个运动
+        $sql = 'SELECT counter, award_min FROM t_award_config WHERE config_type = ?';
+        $sportAward = $this->db->getPairs($sql, 'sport');
+        $sportInfo = array(1 => array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗20热量', 'time' => 1), 2 => array('name' => '慢慢扭头', 'desc' => '运动2分钟，可消耗50热量', 'time' => 2), 3 => array('name' => '出门散步', 'desc' => '运动5分钟，可消耗100热量', 'time' => 5), 4 => array('name' => '出门跑步', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30), 5 => array('name' => '打篮球', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30), 6 => array('name' => '踢足球', 'desc' => '运动30分钟，可消耗1000热量', 'time' => 30));
+        if (!isset($this->inputData['count']) || !in_array($this->inputData['count'], array_keys($sportInfo))) {
+            return 202;
+        }
+        // 判断当前运动是否可以加速
+        $sql = 'SELECT * FROM t_activity_sport WHERE user_id = ? AND sport_date = ? AND counter = ?';
+        $sport = $this->db->getRow($sql, $this->userId, date('Y-m-d'), $this->inputData['count']);
+        if (!$sport || strtotime($sport['complete_time']) <= time()) {
+            return 321;
+        }
+        $sql = 'UPDATE t_activity_sport SET complete_time = ? WHERE sport_id = ?';
+        $this->db->exec($sql, date('Y-m-d H:i:s'), $sport['sport_id']);
+        return array(array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 2, 'count' => $this->inputData['count']));
+    }
+
+    public function livenessAwardAction () {
+        $livenessList = array(1 => array('count' => 1, 'award' => 5, 'status' => 0, 'name' => '签到', 'desc' => '完成当天签到', 'url' => 'task'), 2 => array('count' => 2, 'award' => 5, 'status' => 0, 'name' => '大转盘活动', 'desc' => '参加3次大转盘活动', 'url' => 'lottery'), 3 => array('count' => 3, 'award' => 20, 'status' => 0, 'name' => '领取步数奖励', 'desc' => '领取15个步数奖励红包', 'url' => 'index'), 4 => array('count' => 4, 'award' => 20, 'status' => 0, 'name' => '喝水打卡', 'desc' => '完成喝水4次', 'url' => 'clockIn'), 5 => array('count' => 5, 'award' => 20, 'status' => 0, 'name' => '运动一下', 'desc' => '参与运动赚活动3次', 'url' => 'sport'), 6 => array('count' => 6, 'award' => 30, 'status' => 0, 'name' => '完成8000步', 'desc' => '当日达到8000步可领取奖励', 'url' => 'walkStage'));
+        if (!isset($this->inputData['count']) || !in_array($this->inputData['count'], array_keys($livenessList))) {
+            return 202;
+        }
+        $sql = 'SELECT liveness_id FROM t_liveness WHERE user_id = ? AND counter = ? AND liveness_date = ?';
+        if ($livenessId = $this->db->getOne($sql, $this->userId, $this->inputData['count'], date('Y-m-d'))) {
+            $sql = 'UPDATE t_liveness SET is_receive = 1 WHERE liveness_id = ?';
+            $this->db->exec($sql, $livenessId);
+            return array();
+        }
+        return 322;
+    }
+
+    /**
      * 保存用户上传图片
      * @param $code base64
      * @return bool|string
@@ -268,6 +363,5 @@ class ActionController extends Controller
             return FALSE;
         }
     }
-
 
 }

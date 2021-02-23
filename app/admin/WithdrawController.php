@@ -61,14 +61,15 @@ Class WithdrawController extends Controller {
                 case 'success':
                     $sql = 'SELECT * FROM t_withdraw WHERE withdraw_id = ?';
                     $payInfo = $this->db->getRow($sql, $_POST['withdraw_id']);
-                    if (in_array($payInfo['withdraw_amount'], array(0.5))) {
-                        $sql = 'SELECT COUNT(withdraw_id) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND withdraw_status = ?';
-                        if ($this->db->getOne($sql, $payInfo['user_id'], $payInfo['withdraw_amount'], 'success')) {
-                            //to do failure reason from api return
-                            $return = $this->model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => '新用户专享', 'withdraw_id' => $_POST['withdraw_id']));
-                            break;
-                        }
-                    }
+//                    // 0.5元不可重复提取
+//                    if (in_array($payInfo['withdraw_amount'], array(0.5))) {
+//                        $sql = 'SELECT COUNT(withdraw_id) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND withdraw_status = ?';
+//                        if ($this->db->getOne($sql, $payInfo['user_id'], $payInfo['withdraw_amount'], 'success')) {
+//                            //to do failure reason from api return
+//                            $return = $this->model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => '新用户专享', 'withdraw_id' => $_POST['withdraw_id']));
+//                            break;
+//                        }
+//                    }
 //                    $wechatPay = new \Core\Wxpay();
 //                    $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['wechat_openid']);
                     $returnStatus = TRUE;

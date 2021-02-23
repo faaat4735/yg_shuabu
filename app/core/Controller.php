@@ -75,4 +75,57 @@ class Controller
         }
         return TRUE;
     }
+
+    public function __liveness($counter) {
+
+        switch ($counter) {
+            // 签到1次
+            case 1:
+                $sql = 'SELECT gold_id FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                if ($this->db->getOne($sql, $this->userId, date('Y-m-d'), 'sign')) {
+                    return TRUE;
+                }
+                break;
+            // 大转盘3次
+            case 2:
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'lottery');
+                if ($taskCount >= 3) {
+                    return TRUE;
+                }
+                break;
+            // 领取15次步数奖励
+            case 3:
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk');
+                if ($taskCount >= 15) {
+                    return TRUE;
+                }
+                break;
+            // 喝水4次
+            case 4:
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'drink');
+                if ($taskCount >= 4) {
+                    return TRUE;
+                }
+                break;
+            // 运动赚3次
+            case 5:
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'sport');
+                if ($taskCount >= 3) {
+                    return TRUE;
+                }
+                break;
+            // 完成8000步
+            case 6:
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ? AND gold_count = 8000';
+                if ($this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk_stage')) {
+                    return TRUE;
+                }
+                break;
+        }
+        return FALSE;
+    }
 }

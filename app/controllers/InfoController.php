@@ -110,4 +110,64 @@ class InfoController extends Controller
         return array('list' => $withdrawList);
     }
 
+    /**
+     * 运动赚活动明细
+     * @return array
+     */
+    public function sportAction () {
+
+        $sql = 'SELECT counter, award_min FROM t_award_config WHERE config_type = ?';
+        $sportAward = $this->db->getPairs($sql, 'sport');
+
+        $sportInfo = array(1 => array('count' => 1, 'award' => $sportAward[1], 'status' => 0, 'name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗20热量'), 2 => array('count' => 2, 'award' => $sportAward[2], 'status' => 0, 'name' => '慢慢扭头', 'desc' => '运动2分钟，可消耗50热量'), 3 => array('count' => 3, 'award' => $sportAward[3], 'status' => 0, 'name' => '出门散步', 'desc' => '运动5分钟，可消耗100热量'), 4 => array('count' => 4, 'award' => $sportAward[4], 'status' => 0, 'name' => '出门跑步', 'desc' => '运动30分钟，可消耗1000热量'), 5 => array('count' => 5, 'award' => $sportAward[5], 'status' => 0, 'name' => '打篮球', 'desc' => '运动30分钟，可消耗1000热量'), 6 => array('count' => 6, 'award' => $sportAward[6], 'status' => 0, 'name' => '踢足球', 'desc' => '运动30分钟，可消耗1000热量'));
+
+        $sql = 'SELECT counter, complete_time, is_receive FROM t_activity_sport WHERE user_id = ?  AND sport_date = ? ORDER BY counter';
+        $sportStatus = $this->db->getAll($sql, $this->userId, date('Y-m-d'));
+        // status 0:未完成 1:去加速 2:可领取 3:已完成
+        foreach ($sportStatus as $status) {
+            if ($status['is_receive']) {
+                $sportInfo[$status['counter']]['status'] = 3;
+            } elseif (strtotime($status['complete_time']) <= time()) {
+                $sportInfo[$status['counter']]['status'] = 2;
+            } else {
+                $sportInfo[$status['counter']]['status'] = 1;
+                $sportInfo[$status['counter']]['endTime'] = strtotime($status['complete_time']) * 1000;
+                $sportInfo[$status['counter']]['serverTime'] = time() * 1000;
+            }
+        }
+        return array('list' => array_values($sportInfo));
+//        return array('list' => array(array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000), array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000), array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000), array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000), array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000), array('name' => '轻轻摆臂', 'desc' => '运动1分钟，可消耗5能量', 'award' => 10, 'status' => 0, 'endTime' => 1231243, 'serverTime' => time() * 1000)));
+    }
+
+    /**
+     * 活跃度信息
+     * @return array
+     */
+    public function livenessAction () {
+        // 查询已完成的活跃任务情况
+
+        $livenessList = array(1 => array('count' => 1, 'award' => 5, 'status' => 0, 'name' => '签到', 'desc' => '完成当天签到', 'url' => 'task'), 2 => array('count' => 2, 'award' => 5, 'status' => 0, 'name' => '大转盘活动', 'desc' => '参加3次大转盘活动', 'url' => 'lottery'), 3 => array('count' => 3, 'award' => 20, 'status' => 0, 'name' => '领取步数奖励', 'desc' => '领取15个步数奖励红包', 'url' => 'index'), 4 => array('count' => 4, 'award' => 20, 'status' => 0, 'name' => '喝水打卡', 'desc' => '完成喝水4次', 'url' => 'clockIn'), 5 => array('count' => 5, 'award' => 20, 'status' => 0, 'name' => '运动一下', 'desc' => '参与运动赚活动3次', 'url' => 'sport'), 6 => array('count' => 6, 'award' => 30, 'status' => 0, 'name' => '完成8000步', 'desc' => '当日达到8000步可领取奖励', 'url' => 'walkStage'));
+
+        $sql = 'SELECT counter, is_receive FROM t_liveness WHERE user_id = ? AND liveness_date = ?';
+        $livenessInfo = $this->db->getPairs($sql, $this->userId, date('Y-m-d'));
+        $receiveAward = 0;
+        // status 0:去完成 1:去领取 2:已完成
+        foreach ($livenessList as $key => &$liveness) {
+            if (isset($livenessInfo[$key])) {
+                if ($livenessInfo[$key]) {
+                    $liveness['status'] = 2;
+                    $receiveAward += $liveness['award'];
+                } else {
+                    $liveness['status'] = 1;
+                }
+            } else {
+                if ($this->__liveness($key, $this->userId)) {
+                    $liveness['status'] = 1;
+                    $sql = 'INSERT INTO t_liveness SET user_id = ?, counter = ?, liveness_date = ?';
+                    $this->db->exec($sql, $this->userId, $key, date('Y-m-d'));
+                }
+            }
+        }
+        return array('receiveAward' => $receiveAward, 'list' => array_values($livenessList));
+    }
 }
