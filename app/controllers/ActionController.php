@@ -282,7 +282,7 @@ class ActionController extends Controller
         $sql = 'INSERT INTO t_activity_sport SET user_id = ?, sport_date = ?, counter = ?, complete_time = ?';
         $endTime = date('Y-m-d H:i:s', strtotime('+ ' . $sportInfo[$this->inputData['count']]['time'] . 'minute'));
         $this->db->exec($sql, $this->userId, date('Y-m-d'), $this->inputData['count'], $endTime);
-        return array(array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 1, 'endTime' => strtotime($endTime) * 1000, 'serverTime' => time() * 1000, 'count' => $this->inputData['count']));
+        return array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 1, 'endTime' => strtotime($endTime) * 1000, 'serverTime' => time() * 1000, 'count' => $this->inputData['count']);
     }
 
     /**
@@ -305,7 +305,7 @@ class ActionController extends Controller
         }
         $sql = 'UPDATE t_activity_sport SET complete_time = ? WHERE sport_id = ?';
         $this->db->exec($sql, date('Y-m-d H:i:s'), $sport['sport_id']);
-        return array(array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 2, 'count' => $this->inputData['count']));
+        return array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 2, 'count' => $this->inputData['count']);
     }
 
     /**
