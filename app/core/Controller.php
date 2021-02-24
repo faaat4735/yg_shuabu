@@ -76,8 +76,12 @@ class Controller
         return TRUE;
     }
 
+    /**
+     * 是否能领取活跃度
+     * @param $counter
+     * @return bool
+     */
     public function __liveness($counter) {
-
         switch ($counter) {
             // 签到1次
             case 1:

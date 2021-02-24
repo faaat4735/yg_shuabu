@@ -86,18 +86,17 @@ class InfoController extends Controller
     public function withdrawAction () {
         $sql = 'SELECT wechat_unionid, alipay_account FROM t_user WHERE user_id = ?';
         $bindInfo = $this->db->getRow($sql, $this->userId);
-        $withdrawArr = array(0.5, 5, 20, 50, 100, 200);
-        foreach ($withdrawArr as $amount) {
-            // 0.5提现只能一次。
-            if (0.5 == $amount) {
-                $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
-                if ($this->db->getOne($sql, $this->userId, $amount)) {
-                    continue;
-                }
+        $isLock = 0;
+        $withdrawList = array(array('amount' => 0.5, 'gold' => 5000), array('amount' => 5, 'gold' => 50000), array('amount' => 20, 'gold' => 200000), array('amount' => 50, 'gold' => 500000), array('amount' => 100, 'gold' => 1000000), array('amount' => 200, 'gold' => 2000000));
+        $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
+        if ($this->db->getOne($sql, $this->userId, 0.5)) {
+            $sql = 'SELECT COUNT(*) FROM t_liveness WHERE user_id = ? AND is_receive = 1 AND liveness_date = ?';
+            $livenessCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'));
+            if ($livenessCount < 6) {
+                $isLock = 1;
             }
-            $withdrawList[] = array('amount' => $amount, 'gold' => $amount * 10000);
         }
-        return array('isBindWechat' => ($bindInfo && $bindInfo['wechat_unionid']) ? 1 : 0, 'withdrawList' => $withdrawList, 'isBindAlipay' => ($bindInfo && $bindInfo['alipay_account']) ? 1 : 0);
+        return array('isBindWechat' => ($bindInfo && $bindInfo['wechat_unionid']) ? 1 : 0, 'withdrawList' => $withdrawList, 'isBindAlipay' => ($bindInfo && $bindInfo['alipay_account']) ? 1 : 0, 'isLock' => $isLock);
     }
 
     /**
@@ -169,5 +168,18 @@ class InfoController extends Controller
             }
         }
         return array('receiveAward' => $receiveAward, 'list' => array_values($livenessList));
+    }
+
+    /**
+     * 邀请好友页面
+     * @return array
+     */
+    public function invitedAction () {
+        $sql = 'SELECT COUNT(id) FROM t_user_invited WHERE user_id = ?';
+        $invitedCount = $this->db->getOne($sql, $this->userId);
+
+        $sql = 'SELECT IFNULL(SUM(gold_amount), 0) FROM t_gold WHERE user_id = ? AND gold_source IN ("do_invite", "do_invite_1", "do_invite_2")';
+        $invitedAward = $this->db->getOne($sql, $this->userId);
+        return array('invitedCount' => $invitedCount, 'invitedAward' => $invitedAward);
     }
 }

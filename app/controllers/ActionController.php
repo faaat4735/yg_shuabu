@@ -121,41 +121,35 @@ class ActionController extends Controller
             return 310;
         }
         // 20201217 微信提现转支付宝提现
-        switch ($_SERVER['HTTP_VERSION_CODE']) {
-            case '1.0':
-            case '1.1':
-            case '1.2':
-            case '1.3':
-                if (!$payInfo['alipay_account']) {
-                    return 316;
-                }
-                //todo 添加支付宝实名认证
-                $payMethod = 'alipay';
-                $payAccount = $payInfo['alipay_account'];
-                $payName = $payInfo['alipay_name'];
-                break;
-            default :
-                if (!isset($this->inputData['method']) && !in_array($this->inputData['method'], array('alipay', 'wechat'))) {
-                    return 202;
-                }
-                switch ($this->inputData['method']) {
-                    case 'alipay':
-                        if (!$payInfo['alipay_account']) {
-                            return 316;
-                        }
-                        $payMethod = 'alipay';
-                        $payAccount = $payInfo['alipay_account'];
-                        $payName = $payInfo['alipay_name'];
-                        break;
-                    case 'wechat':
-                        if (!$payInfo['wechat_unionid']) {
-                            return 311;
-                        }
-                        $payMethod = 'wechat';
-                        $payAccount = $payInfo['wechat_openid'];
-                        $payName = '';
-                        break;
-                }
+        if ($_SERVER['HTTP_VERSION_CODE'] <= 1.3) {
+            if (!$payInfo['alipay_account']) {
+                return 316;
+            }
+            //todo 添加支付宝实名认证
+            $payMethod = 'alipay';
+            $payAccount = $payInfo['alipay_account'];
+            $payName = $payInfo['alipay_name'];
+        } elseif (!isset($this->inputData['method']) && !in_array($this->inputData['method'], array('alipay', 'wechat'))) {
+            return 202;
+        } else {
+            switch ($this->inputData['method']) {
+                case 'alipay':
+                    if (!$payInfo['alipay_account']) {
+                        return 316;
+                    }
+                    $payMethod = 'alipay';
+                    $payAccount = $payInfo['alipay_account'];
+                    $payName = $payInfo['alipay_name'];
+                    break;
+                case 'wechat':
+                    if (!$payInfo['wechat_unionid']) {
+                        return 311;
+                    }
+                    $payMethod = 'wechat';
+                    $payAccount = $payInfo['wechat_openid'];
+                    $payName = '';
+                    break;
+            }
         }
 
         $withdrawalGold = $this->inputData['amount'] * 10000;
@@ -165,8 +159,16 @@ class ActionController extends Controller
         }
         if (0.5 == $this->inputData['amount']) {
             $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
-            if ($this->db->getOne($sql, $this->userId, $this->inputData['amount'])) {
-                return 313;
+            if ($this->db->getOne($sql, $this->userId, 0.5)) {
+                if ($_SERVER['HTTP_VERSION_CODE'] <= 1.3) {
+                    return 313;
+                } else {
+                    $sql = 'SELECT COUNT(*) FROM t_liveness WHERE user_id = ? AND is_receive = 1 AND liveness_date = ?';
+                    $livenessCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'));
+                    if ($livenessCount < 6) {
+                        return 323;
+                    }
+                }
             }
         }
         //todo 高并发多次插入记录问题 加锁解决
@@ -306,6 +308,10 @@ class ActionController extends Controller
         return array(array('type' => 'sport', 'name' => $sportInfo[$this->inputData['count']]['name'], 'desc' => $sportInfo[$this->inputData['count']]['desc'], 'award' => $sportAward[$this->inputData['count']], 'status' => 2, 'count' => $this->inputData['count']));
     }
 
+    /**
+     * 领取活跃度
+     * @return array|int
+     */
     public function livenessAwardAction () {
         $livenessList = array(1 => array('count' => 1, 'award' => 5, 'status' => 0, 'name' => '签到', 'desc' => '完成当天签到', 'url' => 'task'), 2 => array('count' => 2, 'award' => 5, 'status' => 0, 'name' => '大转盘活动', 'desc' => '参加3次大转盘活动', 'url' => 'lottery'), 3 => array('count' => 3, 'award' => 20, 'status' => 0, 'name' => '领取步数奖励', 'desc' => '领取15个步数奖励红包', 'url' => 'index'), 4 => array('count' => 4, 'award' => 20, 'status' => 0, 'name' => '喝水打卡', 'desc' => '完成喝水4次', 'url' => 'clockIn'), 5 => array('count' => 5, 'award' => 20, 'status' => 0, 'name' => '运动一下', 'desc' => '参与运动赚活动3次', 'url' => 'sport'), 6 => array('count' => 6, 'award' => 30, 'status' => 0, 'name' => '完成8000步', 'desc' => '当日达到8000步可领取奖励', 'url' => 'walkStage'));
         if (!isset($this->inputData['count']) || !in_array($this->inputData['count'], array_keys($livenessList))) {
