@@ -6,9 +6,7 @@ require_once __DIR__ . '/../init.inc.php';
 
 $db = \Core\Db::getDbInstance();
 
-$sql = 'DELETE FROM t_gold WHERE user_id = 16 AND gold_source = "sport"';
-$db->exec($sql);
-$sql = 'DELETE FROM t_activity_sport WHERE user_id = 16';
+$sql = 'DELETE FROM t_user WHERE device_id = "e132ec091abc3eb8a43e03cf60305723"';
 $db->exec($sql);
 
 echo 'done';
