@@ -6,7 +6,9 @@ require_once __DIR__ . '/../init.inc.php';
 
 $db = \Core\Db::getDbInstance();
 
-$sql = 'DELETE FROM t_user WHERE device_id = "e132ec091abc3eb8a43e03cf60305723"';
-$db->exec($sql);
+if (DEBUG_MODE) {
+    $sql = 'DELETE FROM t_user WHERE device_id = "e132ec091abc3eb8a43e03cf60305723"';
+    $db->exec($sql);
+}
 
 echo 'done';
