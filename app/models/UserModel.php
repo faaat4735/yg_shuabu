@@ -46,8 +46,8 @@ class UserModel extends Model
         }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
         $newerAward = $this->db->getOne($sql);
-        $this->gold->insert(array('user_id' => $userId, 'gold_count' => 1, 'gold_amount' => $newerAward, 'gold_source' => 'newer', 'isDouble' => 0));
-        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => $newerAward, 'newerAward' => $newerAward);
+//        $this->gold->insert(array('user_id' => $userId, 'gold_count' => 1, 'gold_amount' => $newerAward, 'gold_source' => 'newer', 'isDouble' => 0));
+        return array('accessToken' => $accessToken, 'nickname' => $nickName, 'headimgurl' => '', 'currentGold' => 0, 'invitedCode' => $invitedCode, 'todayGold' => 0, 'newerAward' => $newerAward);
     }
 
     /**
