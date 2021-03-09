@@ -101,16 +101,16 @@ class Controller
             // 领取15次步数奖励
             case 3:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
-                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk');
-                if ($taskCount >= 15) {
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'drink');
+                if ($taskCount >= 4) {
                     return TRUE;
                 }
                 break;
             // 喝水4次
             case 4:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
-                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'drink');
-                if ($taskCount >= 4) {
+                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk');
+                if ($taskCount >= 15) {
                     return TRUE;
                 }
                 break;
@@ -122,9 +122,9 @@ class Controller
                     return TRUE;
                 }
                 break;
-            // 完成8000步
+            // 完成3000步
             case 6:
-                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ? AND gold_count = 8000';
+                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ? AND gold_count = 3000';
                 if ($this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk_stage')) {
                     return TRUE;
                 }
