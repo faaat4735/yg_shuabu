@@ -169,6 +169,13 @@ class ActionController extends Controller
                     if ($livenessCount < 6) {
                         return 323;
                     }
+                    $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success") AND create_time >= ?';
+                    if ($this->db->getOne($sql, $this->userId, 0.5, date('Y-m-d 00:00:00'))) {
+                        $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success") AND create_time < ?';
+                        if ($this->db->getOne($sql, $this->userId, 0.5, date('Y-m-d 00:00:00'))) {
+                            return 325;
+                        }
+                    }
                 }
             }
         }
