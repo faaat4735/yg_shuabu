@@ -242,6 +242,9 @@ class ActionController extends Controller
         if ($bindInfo) {
             return 318;
         }
+        if (!preg_match("/^1[34578]{1}\d{9}$/", $this->inputData['account']) && !preg_match("/^[a-zA-Z][a-zA-z0-9-]*[@]([a-zA-Z0-9]*[.]){1,3}[a-zA-Z]*/", $this->inputData['account'])) {
+            return 326;
+        }
         $sql = 'UPDATE t_user SET alipay_account = ?, alipay_name = ? WHERE user_id = ?';
         $this->db->exec($sql, $this->inputData['account'], $this->inputData['name'], $this->userId);
         return array();
