@@ -142,7 +142,7 @@ class ActionController extends Controller
                     $payName = $payInfo['alipay_name'];
                     break;
                 case 'wechat':
-                    return ;
+                    return 324;
                     if (!$payInfo['wechat_unionid']) {
                         return 311;
                     }
