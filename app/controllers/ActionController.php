@@ -178,6 +178,14 @@ class ActionController extends Controller
                     }
                 }
             }
+        } elseif (5 == $this->inputData['amount']) {
+            $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
+            if ($this->db->getOne($sql, $this->userId, 5)) {
+                return 313;
+            }
+            if (date('H') > 12 ) {
+                return 327;
+            }
         }
         //todo 高并发多次插入记录问题 加锁解决
 //        $sql = 'INSERT INTO t_withdraw (user_id, withdraw_amount, withdraw_gold, withdraw_status, withdraw_method, wechat_openid) SELECT :user_id, :withdraw_amount,:withdraw_gold, :withdraw_status, :withdraw_method, :wechat_openid FROM DUAL WHERE NOT EXISTS (SELECT withdraw_id FROM t_withdraw WHERE user_id = :user_id AND withdraw_amount = :withdraw_amount AND withdraw_status = :withdraw_status)';
