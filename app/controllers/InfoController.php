@@ -87,7 +87,7 @@ class InfoController extends Controller
         $sql = 'SELECT wechat_unionid, alipay_account FROM t_user WHERE user_id = ?';
         $bindInfo = $this->db->getRow($sql, $this->userId);
         $isLock = 0;
-        $withdrawList = array(array('amount' => 0.5, 'gold' => 5000), array('amount' => 5, 'gold' => 50000), array('amount' => 20, 'gold' => 200000), array('amount' => 50, 'gold' => 500000), array('amount' => 100, 'gold' => 1000000), array('amount' => 200, 'gold' => 2000000));
+        $withdrawList = array(array('amount' => 0.5, 'gold' => 5000), array('amount' => 20, 'gold' => 200000), array('amount' => 50, 'gold' => 500000), array('amount' => 100, 'gold' => 1000000), array('amount' => 200, 'gold' => 2000000));
         $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ? AND withdraw_amount = ? AND (withdraw_status = "pending" OR withdraw_status = "success")';
         if ($this->db->getOne($sql, $this->userId, 0.5)) {
             $sql = 'SELECT COUNT(*) FROM t_liveness WHERE user_id = ? AND is_receive = 1 AND liveness_date = ?';

@@ -112,7 +112,7 @@ class ActionController extends Controller
      * @return array|int
      */
     public function requestWithdrawAction () {
-        if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.5, 20, 50, 100, 150, 200))) {
+        if (!isset($this->inputData['amount']) || !in_array($this->inputData['amount'], array(0.5, 20, 50, 100, 200))) {
             return 202;
         }
         $sql = 'SELECT wechat_unionid, wechat_openid, user_status, alipay_account, alipay_name FROM t_user WHERE user_id = ?';
