@@ -340,10 +340,9 @@ class ActionController extends Controller
         if (!isset($this->inputData['count']) || !in_array($this->inputData['count'], array(1, 2, 3, 4, 5, 6))) {
             return 202;
         }
-        $sql = 'SELECT liveness_id FROM t_liveness WHERE user_id = ? AND counter = ? AND liveness_date = ?';
-        if ($livenessId = $this->db->getOne($sql, $this->userId, $this->inputData['count'], date('Y-m-d'))) {
-            $sql = 'UPDATE t_liveness SET is_receive = 1 WHERE liveness_id = ?';
-            $this->db->exec($sql, $livenessId);
+        if ($this->__liveness($this->inputData['count'], $this->userId)) {
+            $sql = 'INSERT INTO t_liveness (user_id, counter, liveness_date, is_receive) SELECT ?, ?, ?, 1 FROM DUAL WHERE NOT EXISTS (SELECT COUNT(liveness_id) FROM t_liveness WHERE user_id = :user_id AND counter = :counter AND liveness_date = :liveness_date AND is_receive = 1)';
+            $this->db->exec($sql, array('user_id' => $this->userId, 'counter' => $this->inputData['count'], 'liveness_date' => date('Y-m-d')));
             return array();
         }
         return 322;

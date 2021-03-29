@@ -147,24 +147,16 @@ class InfoController extends Controller
 
         $livenessList = array(1 => array('count' => 1, 'award' => 100, 'status' => 0, 'name' => '签到', 'desc' => '完成当天签到', 'url' => 'task'), 2 => array('count' => 2, 'award' => 150, 'status' => 0, 'name' => '大转盘活动', 'desc' => '参加3次大转盘活动', 'url' => 'lottery'), 3 => array('count' => 3, 'award' => 150, 'status' => 0, 'name' => '喝水打卡', 'desc' => '完成喝水4次', 'url' => 'clockIn'), 4 => array('count' => 4, 'award' => 200, 'status' => 0, 'name' => '领取步数奖励', 'desc' => '领取15个步数奖励红包', 'url' => 'index'), 5 => array('count' => 5, 'award' => 200, 'status' => 0, 'name' => '运动一下', 'desc' => '参与运动赚活动3次', 'url' => 'sport'), 6 => array('count' => 6, 'award' => 200, 'status' => 0, 'name' => '完3000步', 'desc' => '当日达到3000步可领取奖励', 'url' => 'walkStage'));
 
-        $sql = 'SELECT counter, is_receive FROM t_liveness WHERE user_id = ? AND liveness_date = ?';
+        $sql = 'SELECT counter, is_receive FROM t_liveness WHERE user_id = ? AND liveness_date = ? AND is_receive = 1';
         $livenessInfo = $this->db->getPairs($sql, $this->userId, date('Y-m-d'));
         $receiveAward = 0;
         // status 0:去完成 1:去领取 2:已完成
         foreach ($livenessList as $key => &$liveness) {
             if (isset($livenessInfo[$key])) {
-                if ($livenessInfo[$key]) {
-                    $liveness['status'] = 2;
-                    $receiveAward += $liveness['award'];
-                } else {
-                    $liveness['status'] = 1;
-                }
-            } else {
-                if ($this->__liveness($key, $this->userId)) {
-                    $liveness['status'] = 1;
-                    $sql = 'INSERT INTO t_liveness SET user_id = ?, counter = ?, liveness_date = ?';
-                    $this->db->exec($sql, $this->userId, $key, date('Y-m-d'));
-                }
+                $liveness['status'] = 2;
+                $receiveAward += $liveness['award'];
+            } elseif ($this->__liveness($key, $this->userId)) {
+                $liveness['status'] = 1;
             }
         }
         return array('receiveAward' => $receiveAward, 'list' => array_values($livenessList));
