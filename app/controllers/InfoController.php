@@ -145,6 +145,14 @@ class InfoController extends Controller
     public function livenessAction () {
         // 查询已完成的活跃任务情况
         $livenessList = array(1 => array('count' => 1, 'award' => 100, 'status' => 0, 'name' => '签到', 'desc' => '完成当天签到', 'url' => 'task'), 2 => array('count' => 2, 'award' => 150, 'status' => 0, 'name' => '大转盘活动', 'desc' => '参加3次大转盘活动', 'url' => 'lottery'), 3 => array('count' => 3, 'award' => 150, 'status' => 0, 'name' => '喝水打卡', 'desc' => '完成喝水4次', 'url' => 'clockIn'), 4 => array('count' => 4, 'award' => 200, 'status' => 0, 'name' => '领取步数奖励', 'desc' => '领取15个步数奖励红包', 'url' => 'index'), 5 => array('count' => 5, 'award' => 200, 'status' => 0, 'name' => '运动一下', 'desc' => '参与运动赚活动3次', 'url' => 'sport'), 6 => array('count' => 6, 'award' => 200, 'status' => 0, 'name' => '完3000步', 'desc' => '当日达到3000步可领取奖励', 'url' => 'walkStage'));
+        $withdrawCount = $this->__withdrawCount();
+        if ($withdrawCount >=4) {
+            $livenessList[2]['desc'] = '参加10次大转盘活动';
+            $livenessList[3]['desc'] = '完成喝水6次';
+            $livenessList[4]['desc'] = '领取25个步数奖励红包';
+            $livenessList[5]['desc'] = '参与运动赚活动5次';
+            $livenessList[6]['desc'] = '当日达到8000步可领取奖励';
+        }
 
         $sql = 'SELECT counter, is_receive FROM t_liveness WHERE user_id = ? AND liveness_date = ? AND is_receive = 1';
         $livenessInfo = $this->db->getPairs($sql, $this->userId, date('Y-m-d'));
@@ -154,7 +162,7 @@ class InfoController extends Controller
             if (isset($livenessInfo[$key])) {
                 $liveness['status'] = 2;
                 $receiveAward += $liveness['award'];
-            } elseif ($this->__liveness($key, $this->userId)) {
+            } elseif ($this->__liveness($key)) {
                 $liveness['status'] = 1;
             }
         }
