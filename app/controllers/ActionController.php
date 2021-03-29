@@ -341,7 +341,7 @@ class ActionController extends Controller
             return 202;
         }
         if ($this->__liveness($this->inputData['count'], $this->userId)) {
-            $sql = 'INSERT INTO t_liveness (user_id, counter, liveness_date, is_receive) SELECT ?, ?, ?, 1 FROM DUAL WHERE NOT EXISTS (SELECT COUNT(liveness_id) FROM t_liveness WHERE user_id = :user_id AND counter = :counter AND liveness_date = :liveness_date AND is_receive = 1)';
+            $sql = 'INSERT INTO t_liveness (user_id, counter, liveness_date, is_receive) SELECT :user_id, :counter, :liveness_date, 1 FROM DUAL WHERE NOT EXISTS (SELECT COUNT(liveness_id) FROM t_liveness WHERE user_id = :user_id AND counter = :counter AND liveness_date = :liveness_date AND is_receive = 1)';
             $this->db->exec($sql, array('user_id' => $this->userId, 'counter' => $this->inputData['count'], 'liveness_date' => date('Y-m-d')));
             return array();
         }
