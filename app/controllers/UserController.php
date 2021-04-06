@@ -21,7 +21,17 @@ class UserController extends Controller
             // 不存在 创建用户，返回用户信息
             $userInfo = $this->model->user->createUser($this->inputData['deviceId'], $this->inputData['userDeviceInfo']);
         }
-        $userInfo['adClick'] = 10;
+        $withdrawCount = $this->__withdrawCount();
+        $userInfo['adClick'] = 8;
+        if ($withdrawCount >= 8) {
+            $userInfo['adClick'] = 1;
+        } elseif ($withdrawCount >= 6) {
+            $userInfo['adClick'] = 2;
+        } elseif ($withdrawCount >= 4) {
+            $userInfo['adClick'] = 4;
+        } elseif ($withdrawCount >= 2) {
+            $userInfo['adClick'] = 6;
+        }
         return $userInfo;
     }
 
