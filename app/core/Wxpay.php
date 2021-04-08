@@ -19,7 +19,7 @@ Class Wxpay{
             'amount' => $amount * 100 , //单位是分
 //            'amount' => $amount , //单位是分
             'check_name' => 'NO_CHECK',//NO_CHECK：不校验真实姓名 FORCE_CHECK：强校验真实姓名
-            'desc' => '计步宝提现',//企业付款备注，必填。注意：备注中的敏感词会被转成字符*
+            'desc' => '天天爱走路提现',//企业付款备注，必填。注意：备注中的敏感词会被转成字符*
             'mch_appid' => WECHAT_APPID,//申请商户号的appid或商户号绑定的appid
             'mchid' => WECHAT_ID,//微信支付分配的商户号
             'nonce_str' => $nonceStr,//随机字符串，不长于32位
