@@ -116,14 +116,18 @@ class Controller
                 break;
             // 领取15次步数奖励
             case 4:
-                $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
-                $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk');
                 if ($this->__withdrawCount() >= 4) {
-                    if ($taskCount >= 25) {
+                    $sql = 'SELECT COUNT(id) FROM t_user_invited WHERE user_id = ? AND create_time >= ?';
+                    $taskCount = $this->db->getOne($sql, $this->userId, date("Y-m-d"));
+                    if ($taskCount >= 1) {
                         return TRUE;
                     }
-                } elseif ($taskCount >= 15) {
-                    return TRUE;
+                } else {
+                    $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
+                    $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk');
+                    if ($taskCount >= 15) {
+                        return TRUE;
+                    }
                 }
                 break;
             // 运动赚3次
