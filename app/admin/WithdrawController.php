@@ -67,7 +67,7 @@ Class WithdrawController extends Controller {
                             break;
                         case 'wechat':
                             $wechatPay = new \Core\Wxpay();
-                            $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['wechat_account']);
+                            $returnStatus = $wechatPay->transfer($payInfo['withdraw_amount'], $payInfo['withdraw_account']);
                             break;
                     }
                     if (TRUE === $returnStatus) {
