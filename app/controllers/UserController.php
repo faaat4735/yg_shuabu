@@ -22,15 +22,15 @@ class UserController extends Controller
             $userInfo = $this->model->user->createUser($this->inputData['deviceId'], $this->inputData['userDeviceInfo']);
         }
         $withdrawCount = $this->__withdrawCount();
-        $userInfo['adClick'] = 8;
+        $userInfo['adClick'] = 6;
         if ($withdrawCount >= 8) {
             $userInfo['adClick'] = 1;
         } elseif ($withdrawCount >= 6) {
             $userInfo['adClick'] = 2;
         } elseif ($withdrawCount >= 4) {
-            $userInfo['adClick'] = 4;
+            $userInfo['adClick'] = 3;
         } elseif ($withdrawCount >= 2) {
-            $userInfo['adClick'] = 6;
+            $userInfo['adClick'] = 5;
         }
         return $userInfo;
     }
