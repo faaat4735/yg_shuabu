@@ -20,12 +20,12 @@ while (true) {
                 $returnStatus = $wechatPay->transfer($withdrawInfo['withdraw_amount'], $withdrawInfo['withdraw_account']);
                 if (TRUE === $returnStatus) {
                     $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ?';
-                    $withdrawCount = $this->db->getOne($sql, $withdrawInfo['user_id']) ?: 0;
-                    $this->model->gold->insert(array('user_id' => $withdrawInfo['user_id'], 'gold_amount' => 0 - $withdrawInfo['withdraw_gold'], 'gold_source' => "withdraw", 'gold_count' => $withdrawCount + 1));
-                    $return = $this->model->withdraw->updateStatus(array('withdraw_status' => 'success', 'withdraw_id' => $withdrawInfo['withdraw_id']));
+                    $withdrawCount = $db->getOne($sql, $withdrawInfo['user_id']) ?: 0;
+                    $model->gold->insert(array('user_id' => $withdrawInfo['user_id'], 'gold_amount' => 0 - $withdrawInfo['withdraw_gold'], 'gold_source' => "withdraw", 'gold_count' => $withdrawCount + 1));
+                    $return = $model->withdraw->updateStatus(array('withdraw_status' => 'success', 'withdraw_id' => $withdrawInfo['withdraw_id']));
                 } else {
                     //to do failure reason from api return
-                    $return = $this->model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => $returnStatus, 'withdraw_id' => $withdrawInfo['withdraw_id']));
+                    $return = $model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => $returnStatus, 'withdraw_id' => $withdrawInfo['withdraw_id']));
                 }
             }
         }
