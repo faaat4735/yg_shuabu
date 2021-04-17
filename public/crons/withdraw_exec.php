@@ -5,11 +5,12 @@ require_once __DIR__ . '/../init.inc.php';
 
 $db = \Core\Db::getDbInstance();
 $model = new \Core\Model();
-$sql = 'SELECT variable_value FROM t_variable WHERE variable_name = "withdraw_max"';
-$withdrawMax = $db->getOne($sql);
 $wechatPay = new \Core\Wxpay();
 
 while (true) {
+    $sql = 'SELECT variable_value FROM t_variable WHERE variable_name = "withdraw_max"';
+    $withdrawMax = $db->getOne($sql);
+
     $sql = 'SELECT withdraw_id, withdraw_amount, withdraw_account, user_id, withdraw_gold FROM t_withdraw WHERE withdraw_status = "pending" AND withdraw_method = "wechat" AND withdraw_amount = 0.5';
     $withdrawList = $db->getAll($sql);
     if ($withdrawList) {
