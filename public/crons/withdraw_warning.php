@@ -27,14 +27,7 @@ $str = '<table>
 </table>';
 $db = \Core\Db::getDbInstance();
 
-$sql = 'SELECT COUNT(withdraw_id) FROM t_withdraw WHERE withdraw_status = "success" AND change_time > ? AND withdraw_amount = 5';
-$total5 = $db->getOne($sql, date('Y-m-d 00:00:00'));
-if ($total5) {
-    $sql = 'SELECT COUNT(withdraw_id) count, SUM(withdraw_amount) sum FROM t_withdraw WHERE withdraw_status = "pending" AND withdraw_amount != 5';
-} else {
-    $sql = 'SELECT COUNT(withdraw_id) count, SUM(withdraw_amount) sum FROM t_withdraw WHERE withdraw_status = "pending"';
-}
-
+$sql = 'SELECT COUNT(withdraw_id) count, SUM(withdraw_amount) sum FROM t_withdraw WHERE withdraw_status = "pending" AND withdraw_amount < 1';
 $total = $db->getRow($sql);
 if (!$total['count']) {
     exit;
