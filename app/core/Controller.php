@@ -82,6 +82,7 @@ class Controller
      * @return bool
      */
     public function __liveness($counter) {
+        $withdrawMax = 3;
         switch ($counter) {
             // 签到1次
             case 1:
@@ -94,7 +95,7 @@ class Controller
             case 2:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
                 $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'lottery');
-                if ($this->__withdrawCount() >= 4) {
+                if ($this->__withdrawCount() >= $withdrawMax) {
                     if ($taskCount >= 10) {
                         return TRUE;
                     }
@@ -106,7 +107,7 @@ class Controller
             case 3:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
                 $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'drink');
-                if ($this->__withdrawCount() >= 4) {
+                if ($this->__withdrawCount() >= $withdrawMax) {
                     if ($taskCount >= 6) {
                         return TRUE;
                     }
@@ -116,7 +117,7 @@ class Controller
                 break;
             // 领取15次步数奖励
             case 4:
-                if ($this->__withdrawCount() >= 4) {
+                if ($this->__withdrawCount() >= $withdrawMax) {
                     $sql = 'SELECT COUNT(id) FROM t_user_invited WHERE user_id = ? AND create_time >= ?';
                     $taskCount = $this->db->getOne($sql, $this->userId, date("Y-m-d"));
                     if ($taskCount >= 1) {
@@ -134,7 +135,7 @@ class Controller
             case 5:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ?';
                 $taskCount = $this->db->getOne($sql, $this->userId, date('Y-m-d'), 'sport');
-                if ($this->__withdrawCount() >= 4) {
+                if ($this->__withdrawCount() >= $withdrawMax) {
                     if ($taskCount >= 5) {
                         return TRUE;
                     }
@@ -145,7 +146,7 @@ class Controller
             // 完成3000步
             case 6:
                 $sql = 'SELECT COUNT(gold_id) FROM t_gold WHERE user_id = ? AND change_date = ? AND gold_source = ? AND gold_count = ?';
-                if ($this->__withdrawCount() >= 4) {
+                if ($this->__withdrawCount() >= $withdrawMax) {
                     if ($this->db->getOne($sql, $this->userId, date('Y-m-d'), 'walk_stage', 8000)) {
                         return TRUE;
                     }
