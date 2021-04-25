@@ -18,16 +18,21 @@ while (true) {
         $count = $db->getOne($sql, date('Y-m-d'));
         if ($count < $withdrawMax) {
             foreach ($withdrawList as $withdrawInfo) {
-                $returnStatus = $wechatPay->transfer($withdrawInfo['withdraw_amount'], $withdrawInfo['withdraw_account']);
-                if (TRUE === $returnStatus) {
-                    $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ?';
-                    $withdrawCount = $db->getOne($sql, $withdrawInfo['user_id']) ?: 0;
-                    $model->gold->insert(array('user_id' => $withdrawInfo['user_id'], 'gold_amount' => 0 - $withdrawInfo['withdraw_gold'], 'gold_source' => "withdraw", 'gold_count' => $withdrawCount + 1));
-                    $return = $model->withdraw->updateStatus(array('withdraw_status' => 'success', 'withdraw_id' => $withdrawInfo['withdraw_id']));
+                $sql = 'SELECT user_status FROM t_user WHERE user_id = ?';
+                if ($db->getOne($sql, $withdrawInfo['user_id'])) {
+                    $returnStatus = $wechatPay->transfer($withdrawInfo['withdraw_amount'], $withdrawInfo['withdraw_account']);
+                    if (TRUE === $returnStatus) {
+                        $sql = 'SELECT COUNT(*) FROM t_withdraw WHERE user_id = ?';
+                        $withdrawCount = $db->getOne($sql, $withdrawInfo['user_id']) ?: 0;
+                        $model->gold->insert(array('user_id' => $withdrawInfo['user_id'], 'gold_amount' => 0 - $withdrawInfo['withdraw_gold'], 'gold_source' => "withdraw", 'gold_count' => $withdrawCount + 1));
+                        $return = $model->withdraw->updateStatus(array('withdraw_status' => 'success', 'withdraw_id' => $withdrawInfo['withdraw_id']));
+                        continue;
+                    }
                 } else {
-                    //to do failure reason from api return
-                    $return = $model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => $returnStatus, 'withdraw_id' => $withdrawInfo['withdraw_id']));
+                    $returnStatus = '违法操作';
                 }
+                //to do failure reason from api return
+                $return = $model->withdraw->updateStatus(array('withdraw_status' => 'failure', 'withdraw_remark' => $returnStatus, 'withdraw_id' => $withdrawInfo['withdraw_id']));
             }
         }
     }
