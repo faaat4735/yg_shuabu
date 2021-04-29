@@ -36,7 +36,7 @@ class UserModel extends Model
         $accessToken = md5($deviceId . time());
         // 插入用户
         $sql = 'INSERT INTO t_user SET user_source = ?, device_id = ?, access_token = ?, nickname = ?, OAID = ?, brand = ?, model = ?, SDKVersion = ?, AndroidId = ?, IMEI = ?, MAC = ?, invited_code = ?, ip_addr = ?, user_status = ?';
-        $this->db->exec($sql, $_SERVER['HTTP_SOURCE'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode, $_SERVER['REMOTE_ADDR'] ?? '', $this->userStatus());
+        $this->db->exec($sql, $_SERVER['HTTP_SOURCE'] ?? '', $deviceId, $accessToken, $nickName, $deviceInfo['OAID'] ?? '', $deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? '', $deviceInfo['SDKVersion'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['MAC'] ?? '', $invitedCode, $_SERVER['REMOTE_ADDR'] ?? '', $this->userStatus($deviceInfo['brand'] ?? '', $deviceInfo['model'] ?? ''));
         // 返回信息
         $userId = $this->db->lastInsertId();
         $this->updateLoginTime($userId);
@@ -123,11 +123,9 @@ class UserModel extends Model
         return $callback;
     }
 
-    public function userStatus () {
+    public function userStatus ($brand, $model) {
         $source = $_SERVER['HTTP_SOURCE'] ?? '';
-        $brand = $_SERVER['brand'] ?? '';
-        $model = $_SERVER['model'] ?? '';
-        if (($source == 'vivo') && ('HUAWEI' == $brand) && ('P40' == $model)) {
+        if ($source == 'vivo' && 'HUAWEI' == $brand && 'P40' == $model) {
             return 0;
         }
         $sql = 'SELECT COUNT(*) FROM t_user WHERE ip_addr = ? AND create_time >= ?';
