@@ -127,7 +127,7 @@ class UserModel extends Model
         $source = $_SERVER['HTTP_SOURCE'] ?? '';
         $brand = $_SERVER['brand'] ?? '';
         $model = $_SERVER['model'] ?? '';
-        if ($source == 'vivo' && 'HUAWEI' == $brand && 'P40' == $model) {
+        if (($source == 'vivo') && ('HUAWEI' == $brand) && ('P40' == $model)) {
             return 0;
         }
         $sql = 'SELECT COUNT(*) FROM t_user WHERE ip_addr = ? AND create_time >= ?';
