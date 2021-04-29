@@ -22,7 +22,7 @@ while (true) {
     $sql = 'SELECT COUNT(*) count, SUM(withdraw_amount) sum FROM t_withdraw WHERE change_time >= ? AND change_time < ? AND withdraw_status = "success"';
     $withInfo = $db->getRow($sql, $start, $end);
     
-    $sql = 'SELECT COUNT(*) FROM t_user WHERE create_time >= ? AND create_time < ?';
+    $sql = 'SELECT COUNT(*) FROM t_user WHERE create_time >= ? AND create_time < ? AND user_status = 1';
     $newUser = $db->getOne($sql, $start, $end);
 
     $sql = 'SELECT IFNULL(SUM(gold_amount), 0) FROM t_gold WHERE change_date = ? AND gold_amount > 0';
