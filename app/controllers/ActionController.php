@@ -349,6 +349,16 @@ class ActionController extends Controller
     }
 
     /**
+     * 上传Topon错误
+     * @return array
+     */
+    public function errorAction () {
+        $sql = 'INSERT INTO t_sdk_error SET user_id = ?, code = ?, msg = ?, platform_code = ?, platform_msg = ?, full_msg = ?';
+        $this->db->exec($sql, $this->userId, $this->inputData['code'] ?? '', $this->inputData['desc'] ?? '', $this->inputData['platformCode'] ?? '', $this->inputData['platformMSG'] ?? '', $this->inputData['itemsErrorInfo'] ?? '');
+        return array();
+    }
+
+    /**
      * 保存用户上传图片
      * @param $code base64
      * @return bool|string
