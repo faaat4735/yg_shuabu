@@ -18,6 +18,19 @@ class ActionController extends Controller
     }
 
     /**
+     * 领取5倍奖励
+     */
+    public function awardNewAction () {
+        if (!isset($this->inputData['count']) || !isset($this->inputData['num']) || !isset($this->inputData['type'])) {
+            return 202;
+        }
+        $taskClass = new \Core\Task($this->userId);
+        $this->inputData['isFive'] = $this->inputData['isDouble'];
+        unset($this->inputData['isDouble']);
+        return $taskClass->receiveAward($this->inputData);
+    }
+
+    /**
      * 绑定微信
      * @return array|int
      */

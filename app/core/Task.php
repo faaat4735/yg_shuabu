@@ -85,7 +85,7 @@ class Task extends Controller
     }
 
     protected function _receiveAward ($data) {
-        $this->model->gold->insert(array('user_id' => $this->userId, 'gold_count' => $data['count'], 'gold_amount' => $data['num'], 'gold_source' => $data['type'], 'isDouble' => $data['isDouble'] ?? 0));
+        $this->model->gold->insert(array('user_id' => $this->userId, 'gold_count' => $data['count'], 'gold_amount' => $data['num'], 'gold_source' => $data['type'], 'isDouble' => $data['isDouble'] ?? 0, 'isFive' => $data['isFive'] ?? 0));
         if (in_array($data['type'], array('drink', 'walk', 'walk_stage', 'newer'))) {
             return array();
         }

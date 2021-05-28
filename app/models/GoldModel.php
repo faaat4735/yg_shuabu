@@ -35,6 +35,12 @@ class GoldModel extends Model
                 $data['gold_amount'] = $data['gold_amount'] * 2;
             }
         }
+        if (isset($data['isFive']) && $data['isFive']) {
+            // 很多类型不能双倍 加上判断 todo
+            if (!in_array($data['gold_source'], array('newer', 'walk_stage'))) {
+                $data['gold_amount'] = $data['gold_amount'] * 5;
+            }
+        }
         $insertData = array('user_id' => $data['user_id'], 'gold_amount' => $data['gold_amount'], 'gold_source' => $data['gold_source'], 'gold_count' => $data['gold_count'], 'change_date' => date('Y-m-d'));
         $sql = 'INSERT INTO t_gold (user_id, gold_count, gold_amount, gold_source, change_date) SELECT :user_id, :gold_count, :gold_amount, :gold_source, :change_date FROM DUAL WHERE NOT EXISTS (SELECT gold_id FROM t_gold WHERE user_id = :user_id AND gold_count = :gold_count AND gold_source = :gold_source AND change_date = :change_date)';
         return $this->db->exec($sql, $insertData);
