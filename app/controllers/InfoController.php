@@ -182,4 +182,8 @@ class InfoController extends Controller
         $invitedAward = $this->db->getOne($sql, $this->userId);
         return array('invitedCount' => $invitedCount, 'invitedAward' => $invitedAward);
     }
+
+    public function statusAction () {
+        return array('adStatus' => "1");
+    }
 }
