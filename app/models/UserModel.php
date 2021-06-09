@@ -40,10 +40,10 @@ class UserModel extends Model
         // 返回信息
         $userId = $this->db->lastInsertId();
         $this->updateLoginTime($userId);
-        $callbackUrl = $this->callback($deviceInfo['OAID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['MAC'] ?? '');
-        if ($callbackUrl) {
-            file_get_contents($callbackUrl);
-        }
+//        $callbackUrl = $this->callback($deviceInfo['OAID'] ?? '', $deviceInfo['IMEI'] ?? '', $deviceInfo['AndroidID'] ?? '', $deviceInfo['MAC'] ?? '');
+//        if ($callbackUrl) {
+//            file_get_contents($callbackUrl);
+//        }
         $sql = 'SELECT award_min FROM t_award_config WHERE config_type = "newer"';
         $newerAward = $this->db->getOne($sql);
 //        $this->gold->insert(array('user_id' => $userId, 'gold_count' => 1, 'gold_amount' => $newerAward, 'gold_source' => 'newer', 'isDouble' => 0));

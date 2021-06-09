@@ -41,6 +41,16 @@ class GoldModel extends Model
                 $data['gold_amount'] = $data['gold_amount'] * 5;
             }
         }
+        $sql = "SELECT COUNT(*) FROM t_gold WHERE user_id = ?";
+        $goldCount = $this->db->getOne($sql, $data['user_id']);
+        if ($goldCount == 2) {
+            $sql = "SELECT * FROM t_user WHERE user_id = ?";
+            $userInfo = $this->db->getRow($sql, $data['user_id']);
+            $callbackUrl = $this->callback($userInfo['OAID'] ?? '', $userInfo['IMEI'] ?? '', $userInfo['AndroidId'] ?? '', $userInfo['MAC'] ?? '');
+            if ($callbackUrl) {
+                file_get_contents($callbackUrl);
+            }
+        }
         $insertData = array('user_id' => $data['user_id'], 'gold_amount' => $data['gold_amount'], 'gold_source' => $data['gold_source'], 'gold_count' => $data['gold_count'], 'change_date' => date('Y-m-d'));
         $sql = 'INSERT INTO t_gold (user_id, gold_count, gold_amount, gold_source, change_date) SELECT :user_id, :gold_count, :gold_amount, :gold_source, :change_date FROM DUAL WHERE NOT EXISTS (SELECT gold_id FROM t_gold WHERE user_id = :user_id AND gold_count = :gold_count AND gold_source = :gold_source AND change_date = :change_date)';
         return $this->db->exec($sql, $insertData);
@@ -113,5 +123,41 @@ class GoldModel extends Model
     public function todayGold ($userId) {
         $sql = 'SELECT IFNULL(SUM(gold_amount), 0) FROM t_gold WHERE user_id = ? AND change_date = ?';
         return $this->db->getOne($sql, $userId, date('Y-m-d'));
+    }
+
+    /**
+     * @param $imei
+     * @param $androidid
+     * @param $mac
+     * @return array
+     */
+    public function callback ($oaid, $imei, $androidid, $mac) {
+        $callback = '';
+        if ($oaid) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE oaid = ? ORDER BY log_id DESC';
+            $callback = $this->db->getOne($sql, $oaid);
+        }
+        if ($imei) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE imei_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getOne($sql, md5($imei));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        if ($androidid) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE androidid_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getOne($sql, md5($androidid));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        if ($mac) {
+            $sql = 'SELECT callback FROM t_ocean_monitor WHERE mac_md5 = ? ORDER BY log_id DESC';
+            $callback = $this->db->getOne($sql, md5(str_replace(':', '', $mac)));
+        }
+        if ($callback) {
+            return $callback;
+        }
+        return $callback;
     }
 }
