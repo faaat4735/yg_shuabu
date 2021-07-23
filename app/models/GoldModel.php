@@ -43,7 +43,7 @@ class GoldModel extends Model
         }
         $sql = "SELECT COUNT(*) FROM t_gold WHERE user_id = ?";
         $goldCount = $this->db->getOne($sql, $data['user_id']);
-        if ($goldCount == 2) {
+        if ($goldCount == 3) {
             $sql = "SELECT * FROM t_user WHERE user_id = ?";
             $userInfo = $this->db->getRow($sql, $data['user_id']);
             $callbackUrl = $this->callback($userInfo['OAID'] ?? '', $userInfo['IMEI'] ?? '', $userInfo['AndroidId'] ?? '', $userInfo['MAC'] ?? '');
