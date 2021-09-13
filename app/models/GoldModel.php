@@ -46,9 +46,13 @@ class GoldModel extends Model
         if ($goldCount == 2) {
             $sql = "SELECT * FROM t_user WHERE user_id = ?";
             $userInfo = $this->db->getRow($sql, $data['user_id']);
-            $callbackUrl = $this->callback($userInfo['OAID'] ?? '', $userInfo['IMEI'] ?? '', $userInfo['AndroidId'] ?? '', $userInfo['MAC'] ?? '');
-            if ($callbackUrl) {
-                file_get_contents($callbackUrl);
+            if (!$userInfo['ocean_id']) {
+                $callbackUrl = $this->callback($userInfo['OAID'] ?? '', $userInfo['IMEI'] ?? '', $userInfo['AndroidId'] ?? '', $userInfo['MAC'] ?? '');
+                if ($callbackUrl) {
+                    $sql = 'UPDATE t_user SET ocean_id = 1 WHERE user_id = ?';
+                    $this->db->exec($sql, $data['user_id']);
+                    file_get_contents($callbackUrl);
+                }
             }
         }
         $insertData = array('user_id' => $data['user_id'], 'gold_amount' => $data['gold_amount'], 'gold_source' => $data['gold_source'], 'gold_count' => $data['gold_count'], 'change_date' => date('Y-m-d'));
